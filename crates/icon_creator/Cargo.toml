@@ -1,0 +1,9 @@
+[package]
+name = "icon_creator"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.98"
+ico = "0.4.0"
+image = "0.25.6"

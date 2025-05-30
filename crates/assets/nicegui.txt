@@ -1,0 +1,55 @@
+/**
+ * Asynchronous function that handles a request to the Rust backend via PyFrame,
+ * and returns either the result or an error message back through a Socket.IO event.
+ *
+ * @param {Object} params - Object containing the request details:
+ *   - id: Unique ID used to match the response with the original sender.
+ *   - method: The Rust method to be invoked.
+ *   - args: (Optional) Arguments to pass to the Rust method.
+ * @param {Object} sio - Socket.IO instance used for communication with the backend (Python).
+ * @param {string} socket_event - The name of the socket event used to send the response.
+ */
+async function pyframe_api(params, sio, socket_event) {
+    const { id, method, args } = params;
+
+    try {
+        // Extract argument values into a list (or empty array if none provided)
+        const argList = args ? Object.values(args) : [];
+
+        // Call the specified method on the Rust backend via PyFrame
+        const result = await PyFrame.call(method, argList);
+
+        // Prepare the response object with the request ID
+        const response = { id };
+
+        // If a result was returned, include it in the response
+        if (result !== null && result !== undefined) {
+            response.result = result;
+        }
+
+        // Emit a success response event to the original sender via Socket.IO
+        sio.emit(socket_event, response);
+
+    } catch (error) {
+        // Convert any error to a string for processing
+        const errorStr = String(error);
+
+        // Default error message if no specific info is available
+        let errorMessage = "Unknown error";
+
+        // Try to extract a more specific error message
+        const parts = errorStr.split(",");
+        if (parts.length >= 3 && parts[1].trim() === "-1") {
+            // Extract everything after the second comma as the error message
+            errorMessage = parts.slice(2).join(",").trim();
+        } else {
+            errorMessage = errorStr;
+        }
+
+        // Emit an error response event to the original sender via Socket.IO
+        sio.emit(socket_event, {
+            id,
+            error: errorMessage
+        });
+    }
+}
