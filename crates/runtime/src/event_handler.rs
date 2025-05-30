@@ -133,10 +133,10 @@ impl EventHandler {
 
         let items = &menu_api.items;
 
-        let window_id: WindowId = self.active_window_id.lock().unwrap().clone().unwrap(); // das wird blockiert weil man einen neuen instans der mutex erstellt hat befor bindig frei gibt
+        let window_id: WindowId = self.active_window_id.lock().unwrap().unwrap();
         let window = binding.get_window_inner(window_id)?;
 
-        if let Some((kind, function_info)) = items.get(&menu_event.id()) {
+        if let Some((kind, function_info)) = items.get(menu_event.id()) {
             match kind {
                 muda::MenuItemKind::MenuItem(item) => {
                     let item_id = item.id().0.clone();
