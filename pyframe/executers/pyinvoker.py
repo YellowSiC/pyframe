@@ -1,6 +1,17 @@
 import inspect
-from typing import (Any, Awaitable, Callable, Dict, Optional, ParamSpec, Tuple,
-                    Type, TypeVar, Union, overload)
+from typing import (
+    Any,
+    Awaitable,
+    Callable,
+    Dict,
+    Optional,
+    ParamSpec,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    overload,
+)
 
 from pydantic import BaseModel, ValidationError
 
@@ -21,14 +32,8 @@ class PyInvoker(ProtocolHandlerBase):
         self.models: Dict[str, Dict[str, Union[Type[BaseModel], Type[Any]]]] = {}
         ConnectionsProtocol.add_protocol("pyinvoker", self)
 
-
-
-
     def register(
-        self,
-        name: str,
-        *args: P.args,
-        **kwargs: P.kwargs
+        self, name: str, *args: P.args, **kwargs: P.kwargs
     ) -> Callable[[CommandFunc[P, R]], CommandFunc[P, R]]:
         """
         Dekorator, um einen Command-Handler zu registrieren.
@@ -38,6 +43,7 @@ class PyInvoker(ProtocolHandlerBase):
         :param kwargs: Zusätzliche optionale Keyword-Argumente.
         :return: Den dekorierten Handler.
         """
+
         def wrapper(func: CommandFunc[P, R]) -> CommandFunc[P, R]:
             sig: inspect.Signature = inspect.signature(func)
             param_models: Dict[str, Union[Type[BaseModel], Type[Any]]] = {}
@@ -83,7 +89,9 @@ class PyInvoker(ProtocolHandlerBase):
                 if isinstance(param_value, dict):
                     validated_kwargs[param_name] = model_cls(**param_value)
                 else:
-                    validated_kwargs[param_name] = model_cls(**{param_name: param_value})
+                    validated_kwargs[param_name] = model_cls(
+                        **{param_name: param_value}
+                    )
             else:
                 validated_kwargs[param_name] = param_value
 
@@ -96,27 +104,29 @@ class PyInvoker(ProtocolHandlerBase):
             return result.model_dump_json(by_alias=True, indent=2)
         return result
 
-    def available_commands(self) -> Dict[str, Dict[str, Union[Type[BaseModel], Type[Any]]]]:
+    def available_commands(
+        self,
+    ) -> Dict[str, Dict[str, Union[Type[BaseModel], Type[Any]]]]:
         """
         Gibt alle verfügbaren Kommandos und deren Parameter-Typen zurück.
         """
         return self.models.copy()
-    
-
- 
 
 
 # Angenommen: registry ist bereits definiert
 registry = PyInvoker()
 
+
 # Typüberladung für mehr Klarheit – mit und ohne Parameter nutzbar
 @overload
-def command(func: CommandFunc[P, R]) -> CommandFunc[P, R]:
-    ...
+def command(func: CommandFunc[P, R]) -> CommandFunc[P, R]: ...
+
 
 @overload
-def command(*, name: Optional[str] = None) -> Callable[[CommandFunc[P, R]], CommandFunc[P, R]]:
-    ...
+def command(
+    *, name: Optional[str] = None
+) -> Callable[[CommandFunc[P, R]], CommandFunc[P, R]]: ...
+
 
 def command(
     func: Optional[CommandFunc[P, R]] = None, *, name: Optional[str] = None
@@ -128,6 +138,7 @@ def command(
     :param name: Optionaler Befehlsname.
     :return: Den dekorierten Handler.
     """
+
     def decorator(fn: CommandFunc[P, R]) -> CommandFunc[P, R]:
         cmd_name = name or fn.__name__
         return registry.register(cmd_name)(fn)
@@ -135,8 +146,3 @@ def command(
     if func is None:
         return decorator
     return decorator(func)
-
-
-
-
-

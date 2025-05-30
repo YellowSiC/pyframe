@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 """
 
 import sys
+
 # Import the main PyFrame class
 from pathlib import Path
 
@@ -19,11 +20,8 @@ class Person(pydantic.BaseModel):
     name: str
 
 
-
 async def menu():
     print("Menu has been called from Rust!")
-
-
 
 
 config = WindowConfigurator()
@@ -55,7 +53,7 @@ app = PyFrame(
     # to enable things like hot reloading and HMR.
     # debug_entry="https://nicegui.io",
     web_proto="pyframe",
-    debug_devtools=True
+    debug_devtools=True,
 )
 
 app.initial_window(window=config)
@@ -75,7 +73,3 @@ async def greet(name: Person) -> pydantic.RootModel[str]:
 if __name__ == "__main__":
     # Start the WebView application (opens a window with the embedded WebView)
     app.start()
-
-
-
-

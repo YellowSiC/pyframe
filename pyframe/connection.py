@@ -1,6 +1,7 @@
 # socketio_app.py
 import inspect
-#from .invoker import registry
+
+# from .invoker import registry
 from typing import Any, Awaitable, Callable, Dict, Optional, ParamSpec, TypeVar
 from uuid import UUID, uuid4
 
@@ -12,10 +13,6 @@ from .executers.executer import ConnectionsProtocol
 
 P = ParamSpec("P")
 R = TypeVar("R")
-
-
-
-
 
 
 class SocketIoApp(socketio.ASGIApp):
@@ -74,7 +71,6 @@ class Connection:
                 return
             print(data)
 
-
         @self.sio.on("python:api")
         async def handle_api_request(sid: str, data: Dict[str, Any]):
             protocol = data.get("protocol")
@@ -92,20 +88,27 @@ class Connection:
                 py_payload = raw_payload.get("payload", {})
             else:
                 py_payload = raw_payload
-            
+
             try:
-                
+
                 full_payload = {"cmd": cmd, **py_payload} if cmd else py_payload
-                raw_result = await ConnectionsProtocol.get_protocol(protocol, full_payload)
-                
+                raw_result = await ConnectionsProtocol.get_protocol(
+                    protocol, full_payload
+                )
+
                 protocol = raw_result["protocol"]
                 result = raw_result["result"]
 
                 if result is not None and protocol == "pyinvoker":
-                    await self.sio.emit("invoke:result", {"id": result_id, "result": result}, to=sid)
+                    await self.sio.emit(
+                        "invoke:result", {"id": result_id, "result": result}, to=sid
+                    )
             except Exception as e:
                 if protocol == "pyinvoker":
-                    await self.sio.emit("invoke:error", {"id": error_id, "error": str(e)}, to=sid)
+                    await self.sio.emit(
+                        "invoke:error", {"id": error_id, "error": str(e)}, to=sid
+                    )
+
 
 """         @self.sio.on("menu_event")  # type: ignore
         async def window_response(sid: str, data: Dict[str, Any]) -> None:
@@ -144,8 +147,3 @@ class Connection:
                 case _:
                     print("Ungültiges Event-Format:", event)
  """
-
-
-
-
-

@@ -1,6 +1,17 @@
 import inspect
-from typing import (Any, Awaitable, Callable, Dict, Optional, ParamSpec, Tuple,
-                    Type, TypeVar, Union, overload)
+from typing import (
+    Any,
+    Awaitable,
+    Callable,
+    Dict,
+    Optional,
+    ParamSpec,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    overload,
+)
 
 from pydantic import BaseModel, ValidationError
 
@@ -9,7 +20,9 @@ class ConnectionsProtocol:
     _protocols: Dict[str, "ProtocolHandlerBase"] = {}
 
     @classmethod
-    def add_protocol(cls, protocol: str, protocol_handler: "ProtocolHandlerBase") -> None:
+    def add_protocol(
+        cls, protocol: str, protocol_handler: "ProtocolHandlerBase"
+    ) -> None:
         cls._protocols[protocol] = protocol_handler
 
     @classmethod
@@ -24,8 +37,3 @@ class ConnectionsProtocol:
 class ProtocolHandlerBase:
     async def trigger(self, data: Optional[Dict[str, Any]]) -> Any:
         raise NotImplementedError
-
-
-
-
-

@@ -3,8 +3,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
 from uuid import UUID, uuid4
 
-from pydantic import (BaseModel, ConfigDict, Field, computed_field,
-                      model_validator)
+from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validator
 from pydantic.alias_generators import to_camel
 
 from ..executers.menu_executer import system_registry
@@ -32,6 +31,7 @@ class BaseSchema(BaseModel):
         if hasattr(self, "_registered_uuid"):
             return str(self._registered_uuid)
         return None
+
 
 class ActivationPolicy(str, Enum):
     regular = "regular"
@@ -297,7 +297,9 @@ class MenuItem(BaseSchema):
     enabled: bool
     modifier: AcceleratorModifier
     key: AcceleratorCode
-    command: Optional[Callable[..., Any]] = Field(default=None, exclude=True)  # bleibt unsichtbar!
+    command: Optional[Callable[..., Any]] = Field(
+        default=None, exclude=True
+    )  # bleibt unsichtbar!
 
 
 class CheckMenuItem(BaseSchema):
@@ -306,7 +308,9 @@ class CheckMenuItem(BaseSchema):
     checked: bool
     modifier: AcceleratorModifier
     key: AcceleratorCode
-    command: Optional[Callable[..., Any]] = Field(default=None, exclude=True)  # bleibt unsichtbar!
+    command: Optional[Callable[..., Any]] = Field(
+        default=None, exclude=True
+    )  # bleibt unsichtbar!
 
 
 class IconMenuItem(BaseSchema):
@@ -315,7 +319,9 @@ class IconMenuItem(BaseSchema):
     icon_path: Path
     modifier: AcceleratorModifier
     key: AcceleratorCode
-    command: Optional[Callable[..., Any]] = Field(default=None, exclude=True)  # bleibt unsichtbar!
+    command: Optional[Callable[..., Any]] = Field(
+        default=None, exclude=True
+    )  # bleibt unsichtbar!
 
 
 class AboutMetadata(BaseSchema):
@@ -336,7 +342,9 @@ class PredefinedMenuItem(BaseSchema):
     item_type: str
     text: Optional[str] = None
     metadata: Optional[AboutMetadata] = None
-    command: Optional[Callable[..., Any]] = Field(default=None, exclude=True)  # bleibt unsichtbar!
+    command: Optional[Callable[..., Any]] = Field(
+        default=None, exclude=True
+    )  # bleibt unsichtbar!
 
 
 class Submenu(BaseSchema):
@@ -346,7 +354,9 @@ class Submenu(BaseSchema):
     check_menu: Optional[List[CheckMenuItem]] = None
     icon_menu: Optional[List[IconMenuItem]] = None
     predefined_menu: Optional[List[PredefinedMenuItem]] = None
-    command: Optional[Callable[..., Any]] = Field(default=None, exclude=True)  # bleibt unsichtbar!
+    command: Optional[Callable[..., Any]] = Field(
+        default=None, exclude=True
+    )  # bleibt unsichtbar!
 
 
 class SystemTray(BaseSchema):

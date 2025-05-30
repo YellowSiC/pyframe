@@ -18,10 +18,20 @@ import uvicorn
 from ..api import FrameRESTAPI
 from ..config import WindowConfigurator
 from ..connection import Connection
-from ..model.models import (AppOptions, CheckMenuItem, IconMenuItem,
-                            LinuxWindowConfig, MacOSWindowConfig, MenuFrame,
-                            MenuItem, PredefinedMenuItem, SocketSettings,
-                            Submenu, SystemTray, WindowsWindowConfig)
+from ..model.models import (
+    AppOptions,
+    CheckMenuItem,
+    IconMenuItem,
+    LinuxWindowConfig,
+    MacOSWindowConfig,
+    MenuFrame,
+    MenuItem,
+    PredefinedMenuItem,
+    SocketSettings,
+    Submenu,
+    SystemTray,
+    WindowsWindowConfig,
+)
 from ..utils import suppress_stderr
 from .runtime import run_webview
 

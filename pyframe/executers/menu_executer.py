@@ -13,7 +13,9 @@ class MenuAPI(ProtocolHandlerBase):
         self._callbacks: Dict[UUID, Dict[str, Any]] = {}
         ConnectionsProtocol.add_protocol("menu", self)
 
-    def register(self, callback: Callable[P, R], *args: P.args, **kwargs: P.kwargs) -> UUID:
+    def register(
+        self, callback: Callable[P, R], *args: P.args, **kwargs: P.kwargs
+    ) -> UUID:
         event_id = uuid4()
         self._callbacks[event_id] = {
             "callback": callback,
@@ -56,5 +58,6 @@ class MenuAPI(ProtocolHandlerBase):
                 await cb(*args, **kwargs)
             else:
                 cb(*args, **kwargs)
+
 
 system_registry = MenuAPI()
