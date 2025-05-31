@@ -270,12 +270,11 @@ impl EventHandler {
             }
         }
 
-        // macOS: Redraw
         #[cfg(target_os = "macos")]
-        unsafe {
-            use objc2_core_foundation::{CFRunLoopGetMain, CFRunLoopWakeUp};
-            let rl = CFRunLoopGetMain().unwrap();
-            CFRunLoopWakeUp(&rl);
+        {
+            use objc2_core_foundation::CFRunLoop;
+            let rl = CFRunLoop::main().unwrap();
+            rl.wake_up();
         }
 
         Ok(tray_icon)
