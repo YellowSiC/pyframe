@@ -25,12 +25,12 @@ pub struct FrameShortcutOption {
 #[derive(Debug, Clone, Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct FrameTrayOptions {
-    pub title:Option<String>,
+    pub title: Option<String>,
     pub icon: Option<String>,
-    pub is_template:Option<bool>,
-    pub menu_on_left_click:Option<bool>,
-    pub tooltip:Option<String>,
-    pub menu:Option<MenuFrame>
+    pub is_template: Option<bool>,
+    pub menu_on_left_click: Option<bool>,
+    pub tooltip: Option<String>,
+    pub menu: Option<MenuFrame>,
 }
 
 #[derive(Deserialize, Clone, Debug, Default, serde::Serialize)]

@@ -8,7 +8,6 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use tao::dpi::{LogicalPosition, LogicalSize};
 
-
 pub type Size = LogicalSize<f64>;
 pub type Position = LogicalPosition<f64>;
 

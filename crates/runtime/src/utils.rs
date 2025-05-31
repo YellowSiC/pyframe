@@ -422,10 +422,7 @@ fn send_json_sync<S: serde::Serialize>(url: &str, path: &str, data: &S) -> anyho
 }
 
 #[allow(dead_code)]
-pub fn menu_provider(
-    app: &Arc<CoreApplication>,
-    window: tao::window::Window,
-) -> anyhow::Result<tao::window::Window> {
+pub fn menu_provider(app: &Arc<CoreApplication>, window: tao::window::Window) -> anyhow::Result<tao::window::Window> {
     let app = app.clone();
     let menu_mode = app.launch_info.options.menu_mode.clone();
     let config = app.launch_info.options.window_menu.clone();

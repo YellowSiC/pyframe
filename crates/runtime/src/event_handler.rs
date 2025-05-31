@@ -207,7 +207,15 @@ impl EventHandler {
 
     fn create_tray_icon(&self) -> Result<Option<tray_icon::TrayIcon>> {
         let menu = self.app.menu()?;
-        let tray_icon_options = self.app.launch_info.options.window_menu.clone().unwrap().system_tray.clone();
+        let tray_icon_options = self
+            .app
+            .launch_info
+            .options
+            .window_menu
+            .clone()
+            .unwrap()
+            .system_tray
+            .clone();
 
         let menu_mode = self.app.launch_info.options.menu_mode.clone();
 
@@ -239,7 +247,6 @@ impl EventHandler {
                 // Tray-Icon mit demselben Menü wie das Fenster
                 let window_menu = menu.get_menu_manager()?; // Beispielmethode, die das Fenster-Menü zurückgib
 
-
                 if let Some(tra_options) = &tray_icon_options {
                     let mut builder = tray_icon::TrayIconBuilder::new();
                     if let Some(icon_path) = &tra_options.icon {
@@ -257,7 +264,6 @@ impl EventHandler {
 
                     tray_icon = Some(builder.with_menu(Box::new(window_menu)).build().unwrap());
                 }
-
             }
             None => {
                 // Gar nichts tun

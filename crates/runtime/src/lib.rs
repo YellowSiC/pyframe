@@ -133,7 +133,6 @@ impl CoreApplication {
         let _main_win = app.window()?.open_window(&event_loop, options)?;
         let _win_id = _main_win.id();
 
-
         let mut handler = EventHandler::new(app.clone(), _win_id);
         let mut _tray_icon: Option<tray_icon::TrayIcon> = None;
         event_loop.run(move |event, target, control_flow| {

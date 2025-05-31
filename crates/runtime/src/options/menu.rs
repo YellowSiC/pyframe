@@ -77,7 +77,6 @@ pub struct Submenu {
     pub command_id: Option<String>,
 }
 
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SystemTray {
@@ -98,8 +97,6 @@ pub struct MenuFrame {
     pub predefined_menu: Option<Vec<PredefinedMenuItem>>,
     pub system_tray: Option<SystemTray>,
 }
-
-
 
 impl MenuFrame {
     pub fn has_menu_item(&self) -> bool {
