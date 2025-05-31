@@ -1,8 +1,15 @@
 from typing import List, Optional, Tuple
 
-from ..model.models import (CheckMenuItem, FrameBackgroundThrottlingPolicy,
-                            IconMenuItem, MenuFrame, MenuItem,
-                            PredefinedMenuItem, Submenu, WindowConfig)
+from ..model.models import (
+    CheckMenuItem,
+    FrameBackgroundThrottlingPolicy,
+    IconMenuItem,
+    MenuFrame,
+    MenuItem,
+    PredefinedMenuItem,
+    Submenu,
+    WindowConfig,
+)
 
 
 class Frame:

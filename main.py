@@ -21,6 +21,7 @@ class Person(pydantic.BaseModel):
 async def menuitem():
     print("Menu has been called from Rust!")
 
+
 submenu = SubMenu(title="Malek", enabled=True)
 submenu.add_menu_item(
     text="File" + " ",
@@ -47,7 +48,7 @@ app = PyFrame(
     debug_resource="resource",
     web_proto="pyframe",
     debug_devtools=True,
-    #menu_mode="menu_tray"
+    # menu_mode="menu_tray"
 )
 
 app.initial_window(window=config)

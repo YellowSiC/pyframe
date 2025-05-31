@@ -19,10 +19,20 @@ from ..api import FrameRESTAPI
 from ..configurationr.menu import Menu
 from ..configurationr.window import Frame
 from ..connection import Connection
-from ..model.models import (AppOptions, CheckMenuItem, IconMenuItem,
-                            LinuxWindowConfig, MacOSWindowConfig, MenuFrame,
-                            MenuItem, PredefinedMenuItem, SocketSettings,
-                            Submenu, SystemTray, WindowsWindowConfig)
+from ..model.models import (
+    AppOptions,
+    CheckMenuItem,
+    IconMenuItem,
+    LinuxWindowConfig,
+    MacOSWindowConfig,
+    MenuFrame,
+    MenuItem,
+    PredefinedMenuItem,
+    SocketSettings,
+    Submenu,
+    SystemTray,
+    WindowsWindowConfig,
+)
 from ..utils import suppress_stderr
 from .runtime import run_webview
 
@@ -45,7 +55,7 @@ class PyFrame:
         fastapi_config: Optional[Dict[str, Any]] = None,
         enable_py_api: Optional[bool] = True,
         web_proto: Optional[str] = None,
-        menu_mode:Optional[Literal["menu","tray","menu_tray"]] = None
+        menu_mode: Optional[Literal["menu", "tray", "menu_tray"]] = None,
     ):
         """
         Initialize the PyFrame application and its components.
@@ -72,7 +82,7 @@ class PyFrame:
             debug_devtools=debug_devtools,
             debug_resource=debug_resource,
             debug_entry=debug_entry,
-            menu_mode=menu_mode
+            menu_mode=menu_mode,
         )
 
         self.shutdown_event = threading.Event()
@@ -133,13 +143,9 @@ class PyFrame:
         if macos:
             self.config.macos_extra = macos
 
-
-
-
     def set_frame_menu(
         self,
         menu: Optional[Menu] = None,
-
     ) -> None:
         """
         Set the initial window configuration.
@@ -152,7 +158,6 @@ class PyFrame:
     def frame_tray(
         self,
         tray: Optional[SystemTray] = None,
-
     ) -> None:
         """
         Set the initial window configuration.
@@ -161,7 +166,6 @@ class PyFrame:
             window: The window configurator to use.
         """
         self.config.tray = tray
-
 
     def start_fastapi(self) -> None:
         """

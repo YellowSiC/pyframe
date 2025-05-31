@@ -3,8 +3,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Literal, Optional, Tuple
 from uuid import UUID, uuid4
 
-from pydantic import (BaseModel, ConfigDict, Field, computed_field,
-                      model_validator)
+from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validator
 from pydantic.alias_generators import to_camel
 
 from ..executers.menu_executer import system_registry
@@ -376,6 +375,7 @@ class MenuFrame(BaseSchema):
     predefined_menu: Optional[List[PredefinedMenuItem]] = None
     system_tray: Optional[SystemTray] = None
 
+
 class FrameShortcutOption(BaseModel):
     modifier: Optional[AcceleratorModifier] = (
         None  # Falls es ein Enum ist, kann man es als Enum definieren
@@ -486,7 +486,6 @@ class WindowConfig(BaseSchema):
     webview_background_throttling: Optional[FrameBackgroundThrottlingPolicy] = None
     webview_proxy_config: Optional[dict] = None
     webview_initialization_script_for_main_only: Optional[Tuple[str, bool]] = None
-    
 
 
 class SocketSettings(BaseSchema):
@@ -534,7 +533,7 @@ class AppOptions(BaseSchema):
     web_proto: Optional[str] = None
     internal_api: Optional[bool] = True
     debug_devtools: Optional[bool] = None
-    menu_mode:Optional[Literal["menu","tray","menu_tray"]] = None
+    menu_mode: Optional[Literal["menu", "tray", "menu_tray"]] = None
     debug_resource: Optional[str] = None
     debug_entry: Optional[str] = None
     socket_settings: SocketSettings = Field(default_factory=SocketSettings)

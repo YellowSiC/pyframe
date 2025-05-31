@@ -2,10 +2,18 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, List, Literal, Optional
 
-from pyframe.model.models import (AboutMetadata, AcceleratorCode,
-                                  AcceleratorModifier, CheckMenuItem,
-                                  IconMenuItem, MenuFrame, MenuItem,
-                                  PredefinedMenuItem, Submenu, SystemTray)
+from pyframe.model.models import (
+    AboutMetadata,
+    AcceleratorCode,
+    AcceleratorModifier,
+    CheckMenuItem,
+    IconMenuItem,
+    MenuFrame,
+    MenuItem,
+    PredefinedMenuItem,
+    Submenu,
+    SystemTray,
+)
 
 PredefinedTyp = Literal[
     "separator",
@@ -72,12 +80,11 @@ class SubMenu:
         metadata: Optional[AboutMetadata] = None,
         command: Optional[Callable] = None,
     ) -> "SubMenu":
-        self.predefined_menu.append(PredefinedMenuItem(
-            item_type=item_type,
-            text=text,
-            metadata=metadata,
-            command=command
-        ))
+        self.predefined_menu.append(
+            PredefinedMenuItem(
+                item_type=item_type, text=text, metadata=metadata, command=command
+            )
+        )
         return self
 
     def add_menu_item(
@@ -88,13 +95,11 @@ class SubMenu:
         key: AcceleratorCode,
         command: Optional[Callable] = None,
     ) -> "SubMenu":
-        self.menu_items.append(MenuItem(
-            text=text,
-            enabled=enabled,
-            modifier=modifier,
-            key=key,
-            command=command
-        ))
+        self.menu_items.append(
+            MenuItem(
+                text=text, enabled=enabled, modifier=modifier, key=key, command=command
+            )
+        )
         return self
 
     def add_check_item(
@@ -106,14 +111,16 @@ class SubMenu:
         key: AcceleratorCode,
         command: Optional[Callable] = None,
     ) -> "SubMenu":
-        self.check_menu.append(CheckMenuItem(
-            text=text,
-            enabled=enabled,
-            checked=checked,
-            modifier=modifier,
-            key=key,
-            command=command
-        ))
+        self.check_menu.append(
+            CheckMenuItem(
+                text=text,
+                enabled=enabled,
+                checked=checked,
+                modifier=modifier,
+                key=key,
+                command=command,
+            )
+        )
         return self
 
     def add_icon_item(
@@ -125,14 +132,16 @@ class SubMenu:
         key: AcceleratorCode,
         command: Optional[Callable] = None,
     ) -> "SubMenu":
-        self.icon_menu.append(IconMenuItem(
-            text=text,
-            enabled=enabled,
-            icon=icon_path,
-            modifier=modifier,
-            key=key,
-            command=command
-        ))
+        self.icon_menu.append(
+            IconMenuItem(
+                text=text,
+                enabled=enabled,
+                icon=icon_path,
+                modifier=modifier,
+                key=key,
+                command=command,
+            )
+        )
         return self
 
     def build(self) -> Submenu:
@@ -153,7 +162,7 @@ class Menu:
         self.check_menu: List[CheckMenuItem] = []
         self.icon_menu: List[IconMenuItem] = []
         self.predefined_menu: List[PredefinedMenuItem] = []
-        self.system_tray:Optional[SystemTray]=None
+        self.system_tray: Optional[SystemTray] = None
 
     def add_predefined_item(
         self,
@@ -162,12 +171,11 @@ class Menu:
         metadata: Optional[AboutMetadata] = None,
         command: Optional[Callable] = None,
     ) -> "Menu":
-        self.predefined_menu.append(PredefinedMenuItem(
-            item_type=item_type,
-            text=text,
-            metadata=metadata,
-            command=command
-        ))
+        self.predefined_menu.append(
+            PredefinedMenuItem(
+                item_type=item_type, text=text, metadata=metadata, command=command
+            )
+        )
         return self
 
     def add_menu_item(
@@ -178,13 +186,11 @@ class Menu:
         key: AcceleratorCode,
         command: Optional[Callable] = None,
     ) -> "Menu":
-        self.menu_items.append(MenuItem(
-            text=text,
-            enabled=enabled,
-            modifier=modifier,
-            key=key,
-            command=command
-        ))
+        self.menu_items.append(
+            MenuItem(
+                text=text, enabled=enabled, modifier=modifier, key=key, command=command
+            )
+        )
         return self
 
     def add_check_item(
@@ -196,14 +202,16 @@ class Menu:
         key: AcceleratorCode,
         command: Optional[Callable] = None,
     ) -> "Menu":
-        self.check_menu.append(CheckMenuItem(
-            text=text,
-            enabled=enabled,
-            checked=checked,
-            modifier=modifier,
-            key=key,
-            command=command
-        ))
+        self.check_menu.append(
+            CheckMenuItem(
+                text=text,
+                enabled=enabled,
+                checked=checked,
+                modifier=modifier,
+                key=key,
+                command=command,
+            )
+        )
         return self
 
     def add_icon_item(
@@ -215,14 +223,16 @@ class Menu:
         key: AcceleratorCode,
         command: Optional[Callable] = None,
     ) -> "Menu":
-        self.icon_menu.append(IconMenuItem(
-            text=text,
-            enabled=enabled,
-            icon=icon_path,
-            modifier=modifier,
-            key=key,
-            command=command
-        ))
+        self.icon_menu.append(
+            IconMenuItem(
+                text=text,
+                enabled=enabled,
+                icon=icon_path,
+                modifier=modifier,
+                key=key,
+                command=command,
+            )
+        )
         return self
 
     def add_submenu(
@@ -234,7 +244,6 @@ class Menu:
             for SubMenu_ in submenus:
                 self.sub_items.append(SubMenu_.build())
         return self
-    
 
     def add_system_tray(
         self,
@@ -242,7 +251,7 @@ class Menu:
         icon: Optional[Path] = None,
         is_template: Optional[bool] = None,
         menu_on_left_click: Optional[bool] = None,
-        tooltip: Optional[str] = None
+        tooltip: Optional[str] = None,
     ):
         self.system_tray = SystemTray(
             title=title,
@@ -259,5 +268,5 @@ class Menu:
             check_menu=self.check_menu or None,
             icon_menu=self.icon_menu or None,
             predefined_menu=self.predefined_menu or None,
-            system_tray=self.system_tray or None
+            system_tray=self.system_tray or None,
         )
