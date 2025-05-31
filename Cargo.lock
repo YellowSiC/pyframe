@@ -2996,7 +2996,9 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1c10c2894a6fed806ade6027bcd50662746363a9589d3ec9d9bef30a4e4bc166"
 dependencies = [
  "bitflags 2.9.1",
+ "block2",
  "dispatch2 0.3.0",
+ "libc",
  "objc2",
 ]
 
@@ -4136,6 +4138,7 @@ dependencies = [
  "notify-rust",
  "objc2",
  "objc2-app-kit",
+ "objc2-core-foundation",
  "once_cell",
  "opener",
  "os_info",
