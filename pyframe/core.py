@@ -6,18 +6,8 @@ import logging
 from contextlib import contextmanager
 from enum import Enum
 from pathlib import Path
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    Dict,
-    Iterator,
-    List,
-    Literal,
-    Optional,
-    Set,
-    Union,
-)
+from typing import (Any, Awaitable, Callable, Dict, Iterator, List, Literal,
+                    Optional, Set, Union)
 
 from fastapi import FastAPI
 from socketio import AsyncServer

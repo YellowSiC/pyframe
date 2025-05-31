@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 
-use crate::options::SocketSettings;
+use crate::{options::SocketSettings, CoreApplication};
 use anyhow::{anyhow, Result};
 use serde_json::{to_string_pretty, Value};
 use std::{
@@ -419,4 +419,55 @@ fn send_json_sync<S: serde::Serialize>(url: &str, path: &str, data: &S) -> anyho
         .json()?; // wandelt Antwort in JSON um
 
     Ok(response)
+}
+
+#[allow(dead_code)]
+pub fn menu_provider(
+    app: &Arc<CoreApplication>,
+    window: tao::window::Window,
+) -> anyhow::Result<tao::window::Window> {
+    let app = app.clone();
+    let menu_mode = app.launch_info.options.menu_mode.clone();
+    let config = app.launch_info.options.window_menu.clone();
+    match menu_mode {
+        Some(crate::options::MenuMode::Menu) | Some(crate::options::MenuMode::MenuAndTray) => {
+            if let Some(menu_frame) = &config {
+                if menu_frame.has_menu_item() {
+                    let mut menu_sys_guard = app.menu()?;
+                    menu_sys_guard.register_menu_items(menu_frame.clone())?;
+                    let menu_bar = menu_sys_guard.get_menu_manager()?;
+
+                    #[cfg(target_os = "windows")]
+                    unsafe {
+                        use tao::platform::windows::WindowExtWindows;
+                        let _ = menu_bar.init_for_hwnd(window.hwnd() as _);
+                    }
+                    #[cfg(target_os = "linux")]
+                    {
+                        use tao::platform::unix::WindowExtUnix;
+                        let _ = menu_bar.init_for_gtk_window(window.gtk_window(), window.default_vbox());
+                    }
+                    #[cfg(target_os = "macos")]
+                    {
+                        menu_bar.init_for_nsapp();
+                    }
+                } else {
+                    println!("window_menu ist leer, kein Menü wird angelegt.");
+                }
+            }
+            let cloned_proxy = app.proxy.clone();
+            muda::MenuEvent::set_event_handler(Some(move |event| {
+                let _ = cloned_proxy.send_event(UserEvent::MenuEvent(event));
+            }));
+        }
+        Some(crate::options::MenuMode::Tray) => {
+            println!("Starte Fenster mit Tray-Icon (ohne Menü im Fenster).");
+            // Hier keine Menü-Initialisierung nötig!
+        }
+        _ => {
+            eprintln!("Unbekannter MenuMode – es wird kein Menü oder Tray-Icon erstellt!");
+        }
+    }
+
+    Ok(window)
 }

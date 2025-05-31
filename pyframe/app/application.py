@@ -11,27 +11,18 @@ import signal
 import sys
 import threading
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional
 
 import uvicorn
 
 from ..api import FrameRESTAPI
-from ..config import WindowConfigurator
+from ..configurationr.menu import Menu
+from ..configurationr.window import Frame
 from ..connection import Connection
-from ..model.models import (
-    AppOptions,
-    CheckMenuItem,
-    IconMenuItem,
-    LinuxWindowConfig,
-    MacOSWindowConfig,
-    MenuFrame,
-    MenuItem,
-    PredefinedMenuItem,
-    SocketSettings,
-    Submenu,
-    SystemTray,
-    WindowsWindowConfig,
-)
+from ..model.models import (AppOptions, CheckMenuItem, IconMenuItem,
+                            LinuxWindowConfig, MacOSWindowConfig, MenuFrame,
+                            MenuItem, PredefinedMenuItem, SocketSettings,
+                            Submenu, SystemTray, WindowsWindowConfig)
 from ..utils import suppress_stderr
 from .runtime import run_webview
 
@@ -54,6 +45,7 @@ class PyFrame:
         fastapi_config: Optional[Dict[str, Any]] = None,
         enable_py_api: Optional[bool] = True,
         web_proto: Optional[str] = None,
+        menu_mode:Optional[Literal["menu","tray","menu_tray"]] = None
     ):
         """
         Initialize the PyFrame application and its components.
@@ -80,6 +72,7 @@ class PyFrame:
             debug_devtools=debug_devtools,
             debug_resource=debug_resource,
             debug_entry=debug_entry,
+            menu_mode=menu_mode
         )
 
         self.shutdown_event = threading.Event()
@@ -109,7 +102,7 @@ class PyFrame:
         """
         self.config.socket_settings = SocketSettings(**kwargs)
 
-    def initial_window(self, window: WindowConfigurator) -> None:
+    def initial_window(self, window: Frame) -> None:
         """
         Set the initial window configuration.
 
@@ -139,6 +132,36 @@ class PyFrame:
             self.config.linux_extra = linux
         if macos:
             self.config.macos_extra = macos
+
+
+
+
+    def set_frame_menu(
+        self,
+        menu: Optional[Menu] = None,
+
+    ) -> None:
+        """
+        Set the initial window configuration.
+
+        Args:
+            window: The window configurator to use.
+        """
+        self.config.window_menu = menu.build()
+
+    def frame_tray(
+        self,
+        tray: Optional[SystemTray] = None,
+
+    ) -> None:
+        """
+        Set the initial window configuration.
+
+        Args:
+            window: The window configurator to use.
+        """
+        self.config.tray = tray
+
 
     def start_fastapi(self) -> None:
         """

@@ -1,19 +1,11 @@
 from typing import List, Optional, Tuple
 
-from .model.models import (
-    CheckMenuItem,
-    FrameBackgroundThrottlingPolicy,
-    IconMenuItem,
-    MenuFrame,
-    MenuItem,
-    PredefinedMenuItem,
-    Submenu,
-    SystemTray,
-    WindowConfig,
-)
+from ..model.models import (CheckMenuItem, FrameBackgroundThrottlingPolicy,
+                            IconMenuItem, MenuFrame, MenuItem,
+                            PredefinedMenuItem, Submenu, WindowConfig)
 
 
-class WindowConfigurator:
+class Frame:
     def __init__(self):
         self.__config = WindowConfig()
 
@@ -188,28 +180,6 @@ class WindowConfigurator:
     def webview_proxy_config(self, config: dict):
         self.__config.webview_proxy_config = config
         return self
-
-    def window_menu(
-        self,
-        menu_items: Optional[List[MenuItem]] = None,
-        sub_menu: Optional[List[Submenu]] = None,
-        check_menu: Optional[List[CheckMenuItem]] = None,
-        icon_menu: Optional[List[IconMenuItem]] = None,
-        predefined_menu: Optional[List[PredefinedMenuItem]] = None,
-    ) -> None:
-        """
-        Set the initial window configuration.
-
-        Args:
-            window: The window configurator to use.
-        """
-        self.__config.window_menu = MenuFrame(
-            menu_items=menu_items,
-            sub_menu=sub_menu,
-            check_menu=check_menu,
-            icon_menu=icon_menu,
-            predefined_menu=predefined_menu,
-        )
 
     def build(self) -> WindowConfig:
         return self.__config

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 use serde::{Deserialize, Serialize};
+
 use std::path::PathBuf;
 
 use crate::hylper::{AcceleratorCode, AcceleratorModifier};
@@ -76,6 +77,17 @@ pub struct Submenu {
     pub command_id: Option<String>,
 }
 
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SystemTray {
+    pub title: Option<String>,
+    pub icon: Option<String>,
+    pub is_template: Option<bool>,
+    pub menu_on_left_click: Option<bool>,
+    pub tooltip: Option<String>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MenuFrame {
@@ -84,17 +96,10 @@ pub struct MenuFrame {
     pub check_menu: Option<Vec<CheckMenuItem>>,
     pub icon_menu: Option<Vec<IconMenuItem>>,
     pub predefined_menu: Option<Vec<PredefinedMenuItem>>,
+    pub system_tray: Option<SystemTray>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct SystemTray {
-    pub title: Option<String>,
-    pub icon: Option<PathBuf>,
-    pub is_template: Option<bool>,
-    pub menu_on_left_click: Option<bool>,
-    pub tooltip: Option<String>,
-}
+
 
 impl MenuFrame {
     pub fn has_menu_item(&self) -> bool {

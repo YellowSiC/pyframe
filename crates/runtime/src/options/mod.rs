@@ -7,6 +7,7 @@ pub(crate) mod window;
 
 use anyhow::Result;
 use directories::BaseDirs;
+use menu::MenuFrame;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -21,9 +22,16 @@ pub struct FrameShortcutOption {
     pub id: u8,
 }
 
-#[derive(Debug, Clone, Deserialize, Default, serde::Serialize)]
+#[derive(Debug, Clone, Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct FrameTrayOptions {}
+pub struct FrameTrayOptions {
+    pub title:Option<String>,
+    pub icon: Option<String>,
+    pub is_template:Option<bool>,
+    pub menu_on_left_click:Option<bool>,
+    pub tooltip:Option<String>,
+    pub menu:Option<MenuFrame>
+}
 
 #[derive(Deserialize, Clone, Debug, Default, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -37,6 +45,17 @@ pub enum ActivationPolicy {
 
     #[serde(rename = "prohibited")]
     Prohibited,
+}
+
+#[derive(Debug, Clone, Deserialize, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub enum MenuMode {
+    #[serde(rename = "menu")]
+    Menu,
+    #[serde(rename = "tray")]
+    Tray,
+    #[serde(rename = "menu_tray")]
+    MenuAndTray,
 }
 
 /// Background throttling policy
@@ -113,6 +132,8 @@ pub struct AppOptions {
     pub macos_extra: Option<crate::options::window::MacOSWindowConfig>,
     pub tray: Option<FrameTrayOptions>,
     pub shortcuts: Option<FrameShortcutOption>,
+    pub menu_mode: Option<MenuMode>,
+    pub window_menu: Option<MenuFrame>,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]

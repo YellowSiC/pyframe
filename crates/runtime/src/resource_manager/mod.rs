@@ -14,6 +14,7 @@ use std::{
     sync::{Arc, Mutex},
 };
 use tao::window::Icon;
+use tray_icon::Icon as TrayIcon;
 
 use crate::{
     lock,
@@ -31,7 +32,7 @@ pub trait ResourceManager: std::fmt::Debug + Send + Sync {
     fn extract(&self, from: &str, to: &Path) -> Result<()>;
     #[allow(dead_code)]
     fn load_icon(&self, path: &str) -> Result<Icon>;
-
+    fn load_tray_icon(&self, path: &str) -> Result<TrayIcon>;
     // ➜ NEU: Direkt aus Bytes laden
     #[allow(dead_code)]
     fn load_icon_from_bytes(&self, data: &[u8]) -> Result<Icon>;
@@ -70,6 +71,11 @@ impl ResourceManager for FileSystemResource {
     fn extract(&self, from: &str, to: &Path) -> Result<()> {
         fs_extra::file::copy(self.root_dir.join(from), to, &fs_extra::file::CopyOptions::new())?;
         Ok(())
+    }
+    fn load_tray_icon(&self, path: &str) -> Result<TrayIcon> {
+        let absolute_path = self.root_dir.join(path);
+        let icon = TrayIcon::from_path(&absolute_path, None)?;
+        Ok(icon)
     }
 
     fn load_icon_from_bytes(&self, data: &[u8]) -> Result<Icon> {
@@ -153,6 +159,19 @@ impl ResourceManager for AppResourceManager {
     fn exists(&self, path: &str) -> bool {
         self.indexes.contains_key(path)
     }
+
+
+    fn load_tray_icon(&self, path: &str) -> Result<TrayIcon> {
+        let data = self.load(path)?;
+        // ➜ PNG dekodieren
+        let decoder = png::Decoder::new(std::io::Cursor::new(&data));
+        let mut reader = decoder.read_info()?;
+        let mut buf = vec![0; reader.output_buffer_size()];
+        let info = reader.next_frame(&mut buf)?;
+        let icon = TrayIcon::from_rgba(buf, info.width, info.height)?;
+        Ok(icon)
+    }
+
 
     fn load_icon_from_bytes(&self, data: &[u8]) -> Result<Icon> {
         let icon = image_utils::png_to_icon(data)?;

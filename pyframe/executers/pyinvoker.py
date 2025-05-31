@@ -1,17 +1,6 @@
 import inspect
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    Dict,
-    Optional,
-    ParamSpec,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-    overload,
-)
+from typing import (Any, Awaitable, Callable, Dict, Optional, ParamSpec, Tuple,
+                    Type, TypeVar, Union, overload)
 
 from pydantic import BaseModel, ValidationError
 

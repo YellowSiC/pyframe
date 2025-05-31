@@ -31,6 +31,7 @@ pub struct CoreApplication {
     _shortcut: ArcMut<shortcut_manager::PyFrameShortcutManager>,
     proxy: FrameEventLoopProxy,
     _menu_bar: ArcMut<PyFrameMenuManager>,
+    _init_tray: ArcMut<Option<options::MenuMode>>,
 }
 
 impl CoreApplication {
@@ -89,6 +90,7 @@ impl CoreApplication {
             _shortcut: shortcut_manager.clone(),
             proxy,
             _menu_bar: menu_manager.clone(),
+            _init_tray: utils::arc_mut(launch_info.options.menu_mode),
         };
 
         let application = std::sync::Arc::new(app);
@@ -108,6 +110,10 @@ impl CoreApplication {
         lock!(self._window_manager)
     }
 
+    pub fn init_tray(&self) -> anyhow::Result<MutexGuard<'_, Option<options::MenuMode>>> {
+        lock!(self._init_tray)
+    }
+
     pub fn menu(&self) -> anyhow::Result<MutexGuard<'_, PyFrameMenuManager>> {
         lock!(self._menu_bar)
     }
@@ -122,15 +128,14 @@ impl CoreApplication {
 
     pub fn run(self: Arc<Self>, event_loop: utils::FrameEventLoop) -> anyhow::Result<()> {
         let app = &self.clone();
-        let menu_eventloop_proxy = app.proxy.clone();
+        // let menu_eventloop_proxy = app.proxy.clone();
         let options: &options::window::WindowConfig = &app.launch_info.options.window.clone();
         let _main_win = app.window()?.open_window(&event_loop, options)?;
         let _win_id = _main_win.id();
 
-        muda::MenuEvent::set_event_handler(Some(move |event| {
-            let _ = menu_eventloop_proxy.send_event(utils::UserEvent::MenuEvent(event));
-        }));
-        let handler = EventHandler::new(app.clone(), _win_id);
+
+        let mut handler = EventHandler::new(app.clone(), _win_id);
+        let mut _tray_icon: Option<tray_icon::TrayIcon> = None;
         event_loop.run(move |event, target, control_flow| {
             handler.handle(event, target, control_flow);
         });

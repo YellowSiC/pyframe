@@ -36,7 +36,6 @@ pub struct FrameWindow {
     pub window: Window,
     pub window_id: WindowId,
     pub webview: WebView,
-    pub menu: Option<muda::Menu>,
     app: Arc<CoreApplication>,
     event_loop_proxy: FrameEventLoopProxy,
     pub state: Mutex<FrameWindowState>,
@@ -50,43 +49,11 @@ impl FrameWindow {
         options: WindowConfig,
         manager: &mut WindowManager,
     ) -> Result<Arc<FrameWindow>> {
-        let mut init_menu_bar: Option<muda::Menu> = None;
-
         let window = FrameBuilder::build_window(&app, manager, id, &options, target)?;
         let (window, webview) = FrameBuilder::build_webview(&app, &options, window, &mut manager.web_context)?;
+
+        let window = utils::menu_provider(&app, window)?;
         let window_id = window.id();
-
-        if let Some(menu_frame) = &options.window_menu {
-            // Prüfen, ob ALLE Felder None sind:
-            let is_empty = menu_frame.has_menu_item();
-            if is_empty {
-                let mut menu_sys_guard = app.menu()?;
-                {
-                    menu_sys_guard.register_menu_items(menu_frame.clone())?;
-                }
-
-                let menu_bar = menu_sys_guard.get_menu_manager()?;
-
-                #[cfg(target_os = "windows")]
-                unsafe {
-                    use tao::platform::windows::WindowExtWindows;
-                    let _ = menu_bar.init_for_hwnd(window.hwnd() as _);
-                }
-                #[cfg(target_os = "linux")]
-                {
-                    use tao::platform::unix::WindowExtUnix;
-                    let _ = menu_bar.init_for_gtk_window(window.gtk_window(), window.default_vbox());
-                }
-                #[cfg(target_os = "macos")]
-                {
-                    menu_bar.init_for_nsapp();
-                }
-
-                init_menu_bar = Some(menu_bar);
-            } else {
-                println!("window_menu ist leer – kein Menü wird angelegt.");
-            }
-        }
 
         Ok(crate::utils::arc(Self {
             app: app.clone(),
@@ -94,7 +61,7 @@ impl FrameWindow {
             window,
             window_id,
             webview,
-            menu: init_menu_bar,
+            //menu: init_menu_bar,
             event_loop_proxy: app.proxy.clone(),
             state: Mutex::new(FrameWindowState {
                 is_block_closed_requested: false,

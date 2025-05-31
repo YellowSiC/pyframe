@@ -16,6 +16,7 @@ pub struct PyFrameMenuManager {
     manager: Menu,
     pub items: HashMap<muda::MenuId, (MenuItemKind, Option<String>)>,
     id_counter: IdCounter, // Falls noch benötigt für andere Zwecke
+    
 }
 
 impl PyFrameMenuManager {
@@ -121,4 +122,5 @@ impl PyFrameMenuManager {
     pub fn get_menu_manager(&self) -> Result<Menu> {
         Ok(self.manager.clone())
     }
+
 }

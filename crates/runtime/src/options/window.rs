@@ -8,7 +8,6 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use tao::dpi::{LogicalPosition, LogicalSize};
 
-use super::menu::MenuFrame;
 
 pub type Size = LogicalSize<f64>;
 pub type Position = LogicalPosition<f64>;
@@ -131,5 +130,4 @@ pub struct WindowConfig {
     #[cfg(target_os = "macos")]
     #[serde(flatten)]
     pub macos_extra: Option<MacOSWindowConfig>,
-    pub window_menu: Option<MenuFrame>,
 }
