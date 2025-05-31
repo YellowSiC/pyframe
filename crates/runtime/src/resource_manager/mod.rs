@@ -74,7 +74,16 @@ impl ResourceManager for FileSystemResource {
     }
     fn load_tray_icon(&self, path: &str) -> Result<TrayIcon> {
         let absolute_path = self.root_dir.join(path);
-        let icon = TrayIcon::from_path(&absolute_path, None)?;
+        let data = std::fs::read(&absolute_path)?;
+        
+        // PNG-Daten dekodieren
+        let decoder = png::Decoder::new(std::io::Cursor::new(&data));
+        let mut reader = decoder.read_info()?;
+        let mut buf = vec![0; reader.output_buffer_size()];
+        let info = reader.next_frame(&mut buf)?;
+
+        // Icon aus RGBA erstellen
+        let icon = TrayIcon::from_rgba(buf, info.width, info.height)?;
         Ok(icon)
     }
 
