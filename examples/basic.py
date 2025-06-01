@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 """
 
 import sys
+
 # Import the main PyFrame class
 from pathlib import Path
 

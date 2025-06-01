@@ -19,10 +19,20 @@ from ..api import FrameRESTAPI
 from ..configurationr.menu import Menu
 from ..configurationr.window import Frame
 from ..connection import Connection
-from ..model.models import (AppOptions, CheckMenuItem, IconMenuItem,
-                            LinuxWindowConfig, MacOSWindowConfig, MenuFrame,
-                            MenuItem, PredefinedMenuItem, SocketSettings,
-                            Submenu, SystemTray, WindowsWindowConfig)
+from ..model.models import (
+    AppOptions,
+    CheckMenuItem,
+    IconMenuItem,
+    LinuxWindowConfig,
+    MacOSWindowConfig,
+    MenuFrame,
+    MenuItem,
+    PredefinedMenuItem,
+    SocketSettings,
+    Submenu,
+    SystemTray,
+    WindowsWindowConfig,
+)
 from ..utils import suppress_stderr
 from .runtime import run_webview
 

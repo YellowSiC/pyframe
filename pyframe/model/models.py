@@ -3,8 +3,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Literal, Optional, Tuple
 from uuid import UUID, uuid4
 
-from pydantic import (BaseModel, ConfigDict, Field, computed_field,
-                      model_validator)
+from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validator
 from pydantic.alias_generators import to_camel
 
 from ..executers.menu_executer import system_registry
@@ -360,15 +359,12 @@ class Submenu(BaseSchema):
     )  # bleibt unsichtbar!
 
 
-
 class SystemTray(BaseSchema):
     """
     Represents the tray icon configuration, matching the Rust-side options.
     """
 
-    icon: Optional[str] = Field(
-        None, description="Path to the icon file (PNG)."
-    )
+    icon: Optional[str] = Field(None, description="Path to the icon file (PNG).")
     title: Optional[str] = Field(
         None,
         description=(

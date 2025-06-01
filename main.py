@@ -48,7 +48,7 @@ app = PyFrame(
     debug_resource="resource",
     web_proto="pyframe",
     debug_devtools=True,
-    menu_mode="tray"
+    menu_mode="tray",
 )
 
 app.initial_window(window=config)
