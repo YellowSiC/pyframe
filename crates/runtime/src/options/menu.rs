@@ -85,6 +85,7 @@ pub struct SystemTray {
     pub is_template: Option<bool>,
     pub menu_on_left_click: Option<bool>,
     pub tooltip: Option<String>,
+    pub temp_dir_path: Option<PathBuf>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

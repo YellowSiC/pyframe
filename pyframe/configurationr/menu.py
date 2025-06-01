@@ -2,18 +2,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, List, Literal, Optional
 
-from pyframe.model.models import (
-    AboutMetadata,
-    AcceleratorCode,
-    AcceleratorModifier,
-    CheckMenuItem,
-    IconMenuItem,
-    MenuFrame,
-    MenuItem,
-    PredefinedMenuItem,
-    Submenu,
-    SystemTray,
-)
+from pyframe.model.models import (AboutMetadata, AcceleratorCode,
+                                  AcceleratorModifier, CheckMenuItem,
+                                  IconMenuItem, MenuFrame, MenuItem,
+                                  PredefinedMenuItem, Submenu, SystemTray)
 
 PredefinedTyp = Literal[
     "separator",
@@ -251,14 +243,16 @@ class Menu:
         icon: Optional[Path] = None,
         is_template: Optional[bool] = None,
         menu_on_left_click: Optional[bool] = None,
+        temp_dir_path: Optional[str] = None,
         tooltip: Optional[str] = None,
     ):
         self.system_tray = SystemTray(
             title=title,
-            icon=icon,
+            icon=str(icon) if icon else None,  # Hier: Path → str
             is_template=is_template,
             menu_on_left_click=menu_on_left_click,
             tooltip=tooltip,
+            temp_dir_path=temp_dir_path
         )
 
     def build(self) -> MenuFrame:

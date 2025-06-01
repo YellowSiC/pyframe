@@ -75,7 +75,7 @@ impl ResourceManager for FileSystemResource {
     fn load_tray_icon(&self, path: &str) -> Result<TrayIcon> {
         let absolute_path = self.root_dir.join(path);
         let data = std::fs::read(&absolute_path)?;
-        
+
         // PNG-Daten dekodieren
         let decoder = png::Decoder::new(std::io::Cursor::new(&data));
         let mut reader = decoder.read_info()?;
@@ -178,7 +178,6 @@ impl ResourceManager for AppResourceManager {
         let icon = TrayIcon::from_rgba(buf, info.width, info.height)?;
         Ok(icon)
     }
-
 
     fn load_icon_from_bytes(&self, data: &[u8]) -> Result<Icon> {
         let icon = image_utils::png_to_icon(data)?;

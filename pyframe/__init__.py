@@ -7,13 +7,9 @@ from .executers.pyinvoker import command
 from .handler.dialog import DialogHandel
 from .handler.webview import WebviewHandel
 from .handler.window import WindowHandel
-from .model.models import (
-    ActivationPolicy,
-    FrameBackgroundThrottlingPolicy,
-    LinuxWindowConfig,
-    MacOSWindowConfig,
-    WindowsWindowConfig,
-)
+from .model.models import (ActivationPolicy, FrameBackgroundThrottlingPolicy,
+                           LinuxWindowConfig, MacOSWindowConfig,
+                           WindowsWindowConfig)
 
 __all__ = [
     "__version__",

@@ -16,6 +16,7 @@ use crate::options::menu::IconMenuItem;
 use crate::options::menu::MenuItem;
 use crate::options::menu::PredefinedMenuItem;
 use crate::options::menu::Submenu;
+use crate::options::menu::SystemTray;
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum AcceleratorCode {
@@ -994,36 +995,23 @@ pub fn create_muda_about_metadata_menu_item(
 
     about_metadata
 }
-
 #[allow(dead_code)]
-pub fn system_tray_icon(icon_path: PathBuf) -> Option<tray_icon::Icon> {
-    let icon_object = match read(&icon_path) {
-        Ok(bytes) => match image::load_from_memory_with_format(&bytes, ImageFormat::Png) {
-            Ok(loaded) => {
-                let image_buffer = loaded.to_rgba8();
-                let (icon_width, icon_height) = image_buffer.dimensions();
-                let icon_rgba = image_buffer.into_raw();
+pub fn system_tray_icon(icon_path: PathBuf) -> tray_icon::Icon {
+    // Icon-Datei lesen
+    let bytes = read(&icon_path).unwrap_or_else(|_| panic!("Failed to read the icon file from path: {:?}", icon_path));
 
-                match tray_icon::Icon::from_rgba(icon_rgba, icon_width, icon_height) {
-                    Ok(icon) => Some(icon),
-                    Err(_) => {
-                        println!("Failed to create icon from RGBA data.");
-                        None
-                    }
-                }
-            }
-            Err(_) => {
-                println!("Failed to load the image from the specified icon path.");
-                None
-            }
-        },
-        Err(_) => {
-            println!("Failed to read the icon file from path: {:?}", icon_path);
-            None
-        }
-    };
+    // Bild laden
+    let loaded = image::load_from_memory_with_format(&bytes, ImageFormat::Png)
+        .unwrap_or_else(|_| panic!("Failed to load the image from the specified icon path."));
 
-    icon_object
+    // In RGBA konvertieren
+    let image_buffer = loaded.to_rgba8();
+    let (icon_width, icon_height) = image_buffer.dimensions();
+    let icon_rgba = image_buffer.into_raw();
+
+    // Icon erstellen
+    tray_icon::Icon::from_rgba(icon_rgba, icon_width, icon_height)
+        .unwrap_or_else(|_| panic!("Failed to create icon from RGBA data."))
 }
 
 #[allow(dead_code)]
@@ -1125,4 +1113,33 @@ pub fn create_submenu(
     }
 
     submenu
+}
+
+pub fn init_sys_tray(tra_options: SystemTray, window_menu: muda::Menu) -> anyhow::Result<tray_icon::TrayIcon> {
+    let mut builder = tray_icon::TrayIconBuilder::new();
+    if let Some(icon_path) = &tra_options.icon {
+        let icon = crate::hylper::system_tray_icon(icon_path.into());
+        builder = builder.with_icon(icon);
+    }
+    #[cfg(not(target_os = "windows"))]
+    if let Some(title) = &tra_options.title {
+        builder = builder.with_title(title);
+    }
+    #[cfg(target_os = "macos")]
+    if let Some(is_template) = &tra_options.is_template {
+        builder = builder.with_icon_as_template(*is_template);
+    }
+    #[cfg(not(target_os = "linux"))]
+    if let Some(is_template) = &tra_options.is_template {
+        builder = builder.with_menu_on_left_click(*is_template);
+    }
+    #[cfg(target_os = "linux")]
+    if let Some(temp_dir_path) = &tra_options.temp_dir_path {
+        builder = builder.with_temp_dir_path(temp_dir_path);
+    }
+    #[cfg(not(target_os = "linux"))]
+    if let Some(tooltip) = &tra_options.tooltip {
+        builder = builder.with_tooltip(tooltip);
+    }
+    Ok(builder.with_menu(Box::new(window_menu)).build()?)
 }

@@ -39,7 +39,7 @@ menu.add_menu_item(
     command=menuitem,
 )
 menu.add_submenu(submenus=[submenu])
-menu.add_system_tray(title="Malek")
+menu.add_system_tray(title="Malek", icon=Path(__file__).parent / "resource/icon.png")
 
 config = Frame()
 config.window_entry(path="index.html")
@@ -48,7 +48,7 @@ app = PyFrame(
     debug_resource="resource",
     web_proto="pyframe",
     debug_devtools=True,
-    # menu_mode="menu_tray"
+    menu_mode="tray"
 )
 
 app.initial_window(window=config)

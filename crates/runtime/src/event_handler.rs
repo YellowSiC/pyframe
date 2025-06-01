@@ -226,21 +226,11 @@ impl EventHandler {
                 // Nur Menü in Fenster – kein TrayIcon
             }
             Some(crate::options::MenuMode::Tray) => {
+                // Tray-Icon mit demselben Menü wie das Fenster
+                let window_menu = menu.get_menu_manager()?; // Beispielmethode, die das Fenster-Menü zurückgib
+
                 if let Some(tra_options) = &tray_icon_options {
-                    if let Some(icon_path) = &tra_options.icon {
-                        let icon = self.app.resource().load_tray_icon(icon_path)?;
-
-                        let mut builder = tray_icon::TrayIconBuilder::new();
-
-                        #[cfg(not(target_os = "windows"))]
-                        {
-                            builder = builder.with_title("Malek");
-                        }
-
-                        builder = builder.with_tooltip("tao - awesome windowing lib").with_icon(icon);
-
-                        tray_icon = Some(builder.build().unwrap());
-                    }
+                    tray_icon = Some(crate::hylper::init_sys_tray(tra_options.clone(), window_menu)?);
                 }
             }
             Some(crate::options::MenuMode::MenuAndTray) => {
@@ -248,21 +238,7 @@ impl EventHandler {
                 let window_menu = menu.get_menu_manager()?; // Beispielmethode, die das Fenster-Menü zurückgib
 
                 if let Some(tra_options) = &tray_icon_options {
-                    let mut builder = tray_icon::TrayIconBuilder::new();
-                    if let Some(icon_path) = &tra_options.icon {
-                        let icon = self.app.resource().load_tray_icon(icon_path)?;
-                        builder = builder.with_icon(icon);
-                    }
-                    if let Some(title) = &tra_options.title {
-                        builder = builder.with_title(title);
-                    }
-
-                    #[cfg(not(target_os = "windows"))]
-                    {
-                        builder = builder.with_title("Malek");
-                    }
-
-                    tray_icon = Some(builder.with_menu(Box::new(window_menu)).build().unwrap());
+                    tray_icon = Some(crate::hylper::init_sys_tray(tra_options.clone(), window_menu)?);
                 }
             }
             None => {

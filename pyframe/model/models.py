@@ -3,7 +3,8 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Literal, Optional, Tuple
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validator
+from pydantic import (BaseModel, ConfigDict, Field, computed_field,
+                      model_validator)
 from pydantic.alias_generators import to_camel
 
 from ..executers.menu_executer import system_registry
@@ -359,12 +360,35 @@ class Submenu(BaseSchema):
     )  # bleibt unsichtbar!
 
 
+
 class SystemTray(BaseSchema):
-    title: Optional[str] = None
-    icon: Optional[Path] = None
-    is_template: Optional[bool] = None
-    menu_on_left_click: Optional[bool] = None
-    tooltip: Optional[str] = None
+    """
+    Represents the tray icon configuration, matching the Rust-side options.
+    """
+
+    icon: Optional[str] = Field(
+        None, description="Path to the icon file (PNG)."
+    )
+    title: Optional[str] = Field(
+        None,
+        description=(
+            "Title for the tray icon (only for non-Windows operating systems)."
+        ),
+    )
+    is_template: Optional[bool] = Field(
+        None,
+        description=(
+            "Whether the icon should be treated as a template (only on macOS and non-Linux systems)."
+        ),
+    )
+    temp_dir_path: Optional[str] = Field(
+        None,
+        description="Temporary directory for the icon (only for Linux).",
+    )
+    tooltip: Optional[str] = Field(
+        None,
+        description="Tooltip text for the tray icon (only for non-Linux systems).",
+    )
 
 
 class MenuFrame(BaseSchema):
