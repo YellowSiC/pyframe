@@ -22,7 +22,6 @@ async def menuitem():
     print("Menu has been called from Rust!")
 
 
-
 # SubMenu Config
 
 submenu = SubMenu(title="Malek", enabled=True)
@@ -49,16 +48,10 @@ menu.add_submenu(submenus=[submenu])
 menu.add_system_tray(title="Malek", icon=Path(__file__).parent / "resource/icon.png")
 
 
-
-
 # Window Config
 config = Frame()
 config.window_entry(path="index.html")
 config.window_inner_size(size=(900, 700))
-
-
-
-
 
 
 app = PyFrame(
