@@ -163,14 +163,28 @@ impl EventHandler {
                         window.post_message(payload)?;
                     }
                 }
-                muda::MenuItemKind::Submenu(_) => {
+                muda::MenuItemKind::Submenu(sub) => {
                     if let Some(func_info) = function_info {
-                        println!("Submenu command_id: {:?}", func_info);
+                        let payload = serde_json::json!({
+                            "event": "menu",
+                            "kind":"submenu",
+                            "command_id": func_info,
+                            "is_enabled":sub.is_enabled()
+                        });
+                        // window.send_ipc_event("window.menu_comand_handel", json!(payload))?;
+                        window.post_message(payload)?;
                     }
                 }
-                muda::MenuItemKind::Predefined(_) => {
+                muda::MenuItemKind::Predefined(pre) => {
                     if let Some(func_info) = function_info {
-                        println!("Predefined command_id: {:?}", func_info);
+                        let payload = serde_json::json!({
+                            "event": "menu",
+                            "kind":"predefined",
+                            "command_id": func_info,
+                            "text":pre.text()
+                        });
+                        // window.send_ipc_event("window.menu_comand_handel", json!(payload))?;
+                        window.post_message(payload)?;
                     }
                 }
                 muda::MenuItemKind::Check(check) => {
