@@ -1141,5 +1141,6 @@ pub fn init_sys_tray(tra_options: SystemTray, window_menu: muda::Menu) -> anyhow
     if let Some(tooltip) = &tra_options.tooltip {
         builder = builder.with_tooltip(tooltip);
     }
-    Ok(builder.with_menu(Box::new(window_menu)).build()?)
+    let tray = builder.with_menu(Box::new(window_menu)).build()?;
+    Ok(tray)
 }

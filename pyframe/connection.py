@@ -8,7 +8,7 @@ from uuid import UUID, uuid4
 import socketio
 
 from . import core
-from .app.runtime import handle_window_response
+from .runtime import handle_window_response
 from .executers.executer import ConnectionsProtocol
 
 P = ParamSpec("P")
@@ -62,6 +62,7 @@ class Connection:
 
         @self.sio.on("window_response")  # type: ignore
         async def window_response(sid: str, data: Dict[str, Any]) -> None:
+            print(data)
             await handle_window_response(data)
 
         @self.sio.on("window_eventloop")  # type: ignore
@@ -77,7 +78,8 @@ class Connection:
             raw_payload = data.get("payload", {})
             result_id = None
             error_id = None
-
+            if protocol == "rust:result:api":
+                await handle_window_response(raw_payload)
             cmd = None
             py_payload = {}
 
@@ -101,12 +103,12 @@ class Connection:
 
                 if result is not None and protocol == "pyinvoker":
                     await self.sio.emit(
-                        "invoke:result", {"id": result_id, "result": result}, to=sid
+                        "pyinvoke:result", {"id": result_id, "result": result}, to=sid
                     )
             except Exception as e:
                 if protocol == "pyinvoker":
                     await self.sio.emit(
-                        "invoke:error", {"id": error_id, "error": str(e)}, to=sid
+                        "pyinvoke:error", {"id": error_id, "error": str(e)}, to=sid
                     )
 
 

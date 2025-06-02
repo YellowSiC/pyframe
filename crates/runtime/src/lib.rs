@@ -97,7 +97,7 @@ impl CoreApplication {
 
         lock!(window_manager)?.bind_app(application.clone());
         lock!(menu_manager)?.bind_app(application.clone());
-        lock!(menu_manager)?.bind_app(application.clone());
+        lock!(api_manager)?.bind_app(application.clone());
         lock!(shortcut_manager)?.bind_app(application.clone());
         Ok(application)
     }
@@ -134,7 +134,7 @@ impl CoreApplication {
         let _win_id = _main_win.id();
 
         let mut handler = EventHandler::new(app.clone(), _win_id);
-        let mut _tray_icon: Option<tray_icon::TrayIcon> = None;
+
         event_loop.run(move |event, target, control_flow| {
             handler.handle(event, target, control_flow);
         });

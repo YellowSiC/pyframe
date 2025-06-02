@@ -452,29 +452,30 @@ pub fn menu_provider(app: &Arc<CoreApplication>, window: tao::window::Window) ->
                     println!("window_menu ist leer, kein Menü wird angelegt.");
                 }
             }
-            let cloned_proxy = app.proxy.clone();
-            muda::MenuEvent::set_event_handler(Some(move |event| {
-                let _ = cloned_proxy.send_event(UserEvent::MenuEvent(event));
-            }));
+
         }
         Some(crate::options::MenuMode::Tray) => {
             if let Some(menu_frame) = &config {
                 if menu_frame.has_menu_item() {
                     let mut menu_sys_guard = app.menu()?;
-                    menu_sys_guard.register_menu_items(menu_frame.clone())?;
-                    let _menu_bar = menu_sys_guard.get_menu_manager()?;
+                    {
+                        menu_sys_guard.register_menu_items(menu_frame.clone())?;
+                    }
+                    
+                    //let _menu_bar = menu_sys_guard.get_menu_manager()?;
 
-                    let cloned_proxy = app.proxy.clone();
-                    muda::MenuEvent::set_event_handler(Some(move |event| {
-                        let _ = cloned_proxy.send_event(UserEvent::MenuEvent(event));
-                    }));
                 }
             }
+            
+
         }
         _ => {
             eprintln!("Unbekannter MenuMode – es wird kein Menü oder Tray-Icon erstellt!");
         }
     }
-
+    let cloned_proxy = app.proxy.clone();
+    muda::MenuEvent::set_event_handler(Some(move |event| {
+        let _ = cloned_proxy.send_event(UserEvent::MenuEvent(event));
+    }));
     Ok(window)
 }

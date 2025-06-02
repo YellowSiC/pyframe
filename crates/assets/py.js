@@ -43,12 +43,13 @@ function invoke(cmd, args = {}) {
 
 function initializeSocketHandlers() {
     // Antwort vom Backend auf Fenster-Requests
-    window.socket.on("window_request", async (data) => {
+    window.socket.on("rust:api", async (data) => {
         const { id, method, args } = data;
         try {
+            
             const argList = args ? Object.values(args) : [];
             const result = await PyFrame.call(method, argList);
-
+            
             const response = { id };
             if (result !== null && result !== undefined) {
                 response.result = result;
@@ -59,6 +60,7 @@ function initializeSocketHandlers() {
                 protocol: "rust:result:api",
                 payload: response
             };
+     
             window.socket.emit("python:api", message);
 
         } catch (error) {
@@ -84,27 +86,26 @@ function initializeSocketHandlers() {
         }
     });
 
-    window.socket.on("invoke:result", ({ id, result }) => {
+    window.socket.on("pyinvoke:result", ({ id, result }) => {
         const prop = `_${id}`;
         if (window[prop]) {
             window[prop](result);
         }
     });
 
-    window.socket.on("invoke:error", ({ id, error }) => {
+    window.socket.on("pyinvoke:error", ({ id, error }) => {
         const prop = `_${id}`;
         if (window[prop]) {
             window[prop](error);
         }
     });
 
-    PyFrame.addEventListener("*", function (data) {
+/*     PyFrame.addEventListener("*", function (data) {
         window.socket.emit("window_eventloop", { event: data });
-    });
+    }); */
 
 
     window.addEventListener("message", (event) => {
-        console.log(event.data)
         window.socket.emit("python:api",event.data);
     });
 }

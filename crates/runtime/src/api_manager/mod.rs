@@ -142,6 +142,7 @@ impl ApiManager {
         let window = app.window()?.get_window_inner(_window.id())?;
 
         let request = serde_json::from_str::<ApiRequest>(&request_str)?;
+ 
 
         let api = self.api_instance.get(&request.1);
 

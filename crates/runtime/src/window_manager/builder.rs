@@ -239,10 +239,11 @@ impl FrameBuilder {
             move |request: wry::http::Request<String>| {
                 let window_result = ipc_app.window().and_then(|w| w.get_window_inner(win_id));
                 let request_str = request.body();
-
+                
                 match window_result {
                     Ok(window) => {
                         if let Err(err) = ipc_app.api().and_then(|w| w.call(&window, request_str.to_string())) {
+                            
                             log_if_err!(window.send_ipc_callback(serde_json::json!({
                                 "ipc.error": err.to_string(),
                             })));

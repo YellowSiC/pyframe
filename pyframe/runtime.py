@@ -2,9 +2,9 @@ import asyncio
 import uuid
 from typing import Any, Dict, Optional
 
-from _pyframe import create_webview
+from pyframe import create_webview
 
-from .. import outbox
+from . import outbox
 
 
 def run_webview(config_json: str) -> None:
@@ -78,7 +78,7 @@ async def endless_state_loop() -> None:
         data: Dict[str, Any] = task.get("data", {})
 
         try:
-            outbox.emit_event("window_request", data)
+            outbox.emit_event("rust:api", data)
         except Exception as e:
             if future:
                 future.set_exception(e)

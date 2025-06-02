@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from . import background_tasks, core, outbox
-from .app.runtime import endless_state_loop
+from .runtime import endless_state_loop
 from .model.models import AppOptions, SocketSettings
 
 

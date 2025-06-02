@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from ..app.runtime import request
+from ..runtime import request
 
 
 class WindowHandel:

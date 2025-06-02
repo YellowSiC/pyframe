@@ -1,6 +1,6 @@
 from typing import List, Literal, Optional
 
-from ..app.runtime import request
+from ..runtime import request
 
 
 class DialogHandel:

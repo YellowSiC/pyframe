@@ -142,8 +142,8 @@ impl EventHandler {
 
         let items = &menu_api.items;
 
-        let window_id: WindowId = self.active_window_id.lock().unwrap().unwrap();
-        let window = binding.get_window_inner(window_id)?;
+        // let window_id: WindowId = self.active_window_id.lock().unwrap().unwrap();
+        let window = binding.get_window_inner(self._window_id)?;
 
         if let Some((kind, function_info)) = items.get(menu_event.id()) {
             match kind {
@@ -199,9 +199,16 @@ impl EventHandler {
                         window.post_message(payload)?;
                     }
                 }
-                muda::MenuItemKind::Icon(_) => {
+                muda::MenuItemKind::Icon(icon) => {
                     if let Some(func_info) = function_info {
-                        println!("Icon command_id: {:?}", func_info);
+                        let payload = serde_json::json!({
+                            "event": "menu",
+                            "kind":"check",
+                            "command_id": func_info,
+                            "is_enabled":icon.is_enabled()
+                        });
+                        // window.send_ipc_event("window.menu_comand_handel", json!(payload))?;
+                        window.post_message(payload)?;
                     }
                 }
             }
@@ -237,21 +244,16 @@ impl EventHandler {
 
         match menu_mode {
             Some(crate::options::MenuMode::Menu) => {
-                // Nur Menü in Fenster – kein TrayIcon
             }
             Some(crate::options::MenuMode::Tray) => {
-                // Tray-Icon mit demselben Menü wie das Fenster
-                let window_menu = menu.get_menu_manager()?; // Beispielmethode, die das Fenster-Menü zurückgib
-
                 if let Some(tra_options) = &tray_icon_options {
+                    let window_menu = menu.get_menu_manager()?; // Beispielmethode, die das Fenster-Menü zurückgib
                     tray_icon = Some(crate::hylper::init_sys_tray(tra_options.clone(), window_menu)?);
                 }
             }
             Some(crate::options::MenuMode::MenuAndTray) => {
-                // Tray-Icon mit demselben Menü wie das Fenster
-                let window_menu = menu.get_menu_manager()?; // Beispielmethode, die das Fenster-Menü zurückgib
-
                 if let Some(tra_options) = &tray_icon_options {
+                    let window_menu = menu.get_menu_manager()?; // Beispielmethode, die das Fenster-Menü zurückgib
                     tray_icon = Some(crate::hylper::init_sys_tray(tra_options.clone(), window_menu)?);
                 }
             }

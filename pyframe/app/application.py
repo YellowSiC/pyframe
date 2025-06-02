@@ -16,8 +16,8 @@ from typing import Any, Dict, List, Literal, Optional
 import uvicorn
 
 from ..api import FrameRESTAPI
-from ..configurationr.menu import Menu
-from ..configurationr.window import Frame
+from ..frame.menu import Menu
+from ..frame.window import Frame
 from ..connection import Connection
 from ..model.models import (
     AppOptions,
@@ -34,7 +34,7 @@ from ..model.models import (
     WindowsWindowConfig,
 )
 from ..utils import suppress_stderr
-from .runtime import run_webview
+from ..runtime import run_webview
 
 
 class PyFrame:
