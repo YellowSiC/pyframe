@@ -5,9 +5,7 @@
 use crate::api_manager::ApiManager;
 
 use anyhow::Result;
-
 use notify_rust::Notification;
-
 use pyframe_macros::pyframe_event_api;
 
 pub fn register_api_instances(_api_manager: &mut ApiManager) {
@@ -32,28 +30,37 @@ fn notification(
     let mut binding = Notification::new();
     let notify = binding.summary(&summary);
 
-
     if let Some(body) = body {
         notify.body(&body);
     }
 
-    #[cfg(any(target_os = "windows", target_os = "macos"))]
+    #[cfg(target_os = "windows")]
     if let Some(app_id) = app_id {
         notify.app_id(&app_id);
     }
+
+    #[cfg(not(target_os = "windows"))]
+    let _ = app_id;
 
     if let Some(appname) = appname {
         notify.appname(&appname);
     }
 
+    #[cfg(target_os = "windows")]
     if let Some(path) = image_path {
         notify.image_path(&path);
     }
+
+    #[cfg(not(target_os = "windows"))]
+    let _ = image_path;
 
     #[cfg(any(target_os = "windows", target_os = "macos"))]
     if let Some(sound) = sound_name {
         notify.sound_name(&sound);
     }
+
+    #[cfg(not(any(target_os = "windows", target_os = "macos")))]
+    let _ = sound_name;
 
     if let Some(subtitle) = subtitle {
         notify.subtitle(&subtitle);
@@ -80,6 +87,5 @@ fn notification(
     }
 
     notify.show()?;
-
     Ok(())
 }
