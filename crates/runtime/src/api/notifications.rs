@@ -18,13 +18,7 @@ macro_rules! set_property {
 }
 
 
-macro_rules! set_property_some {
-    ($builder:expr, $method:ident, $value:expr) => {
-        if let Some(v) = $value {
-            $builder.$method(v);
-        }
-    };
-}
+
 
 pub fn register_api_instances(_api_manager: &mut ApiManager) {
     
@@ -57,13 +51,28 @@ fn notification(
     // set_property (immer)
     set_property!(notify, summary, &summary);
 
-    // set_property_some (nur wenn Option != None)
-    set_property_some!(notify, body, &body);
-    set_property_some!(notify, app_id, &app_id);
-    set_property_some!(notify, appname, &appname);
-    set_property_some!(notify, image_path, &image_path);
-    set_property_some!(notify, sound_name, &sound_name);
-    set_property_some!(notify, subtitle, &subtitle);
+    if let Some(body) = body {
+        notify.body(&body);
+    }
+    if let Some(app_id) = app_id {
+        notify.app_id(&app_id);
+    }
+
+    if let Some(appname) = appname {
+        notify.appname(&appname);
+    }
+
+    if let Some(path) = image_path {
+        notify.image_path(&path);
+    }
+        // auto_icon als bool prüfen
+    if let Some(sound) = sound_name {
+        notify.sound_name(&sound);
+    }
+    // auto_icon als bool prüfen
+    if let Some(subtitle) = subtitle {
+        notify.subtitle(&subtitle);
+    }
 
 
     if let Some(id) = &id {
