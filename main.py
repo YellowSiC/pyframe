@@ -2,7 +2,7 @@
 Copyright 2025-2030 PyFrame Programme within The Commons Conservancy
 SPDX-License-Identifier: Apache-2.0
 SPDX-License-Identifier: MIT
-nuitka --standalone --output-dir=dist --include-data-dir=c:\\Users\\MalekAli\\Desktop\\malek\\resource=resource basic.py   
+nuitka --standalone --output-dir=dist --include-data-dir=c:\\Users\\MalekAli\\Desktop\\malek\\resource=resource basic.py
 """
 
 import sys
@@ -11,8 +11,8 @@ from pathlib import Path
 import pydantic
 
 from pyframe import Frame, Menu, PyFrame, SubMenu, WindowsWindowConfig, command
-from pyframe.model.models import AcceleratorCode, AcceleratorModifier
 from pyframe.handler.notify import notification
+from pyframe.model.models import AcceleratorCode, AcceleratorModifier
 
 """ class Person(pydantic.BaseModel):
     name: str
@@ -75,5 +75,3 @@ if __name__ == "__main__":
     app.start()
 
  """
-
-

@@ -1,5 +1,7 @@
 from typing import Optional
+
 from ..runtime import request
+
 
 class WindowExtraAPI:
     """
@@ -11,7 +13,9 @@ class WindowExtraAPI:
         payload = {"enabled": enabled, "id": id}
         return await request("windowExtra.setEnable", payload, scope=False)
 
-    async def set_taskbar_icon(self, taskbar_icon: str, id: Optional[int] = None) -> None:
+    async def set_taskbar_icon(
+        self, taskbar_icon: str, id: Optional[int] = None
+    ) -> None:
         payload = {"taskbar_icon": taskbar_icon, "id": id}
         return await request("windowExtra.setTaskbarIcon", payload, scope=False)
 
@@ -23,7 +27,9 @@ class WindowExtraAPI:
         payload = {"id": id}
         return await request("windowExtra.resetDeadKeys", payload, scope=False)
 
-    async def begin_resize_drag(self, edge: int, button: int, x: int, y: int, id: Optional[int] = None) -> None:
+    async def begin_resize_drag(
+        self, edge: int, button: int, x: int, y: int, id: Optional[int] = None
+    ) -> None:
         payload = {"edge": edge, "button": button, "x": x, "y": y, "id": id}
         return await request("windowExtra.beginResizeDrag", payload, scope=False)
 
@@ -31,7 +37,9 @@ class WindowExtraAPI:
         payload = {"skip": skip, "id": id}
         return await request("windowExtra.setSkipTaskbar", payload, scope=False)
 
-    async def set_undecorated_shadow(self, shadow: bool, id: Optional[int] = None) -> None:
+    async def set_undecorated_shadow(
+        self, shadow: bool, id: Optional[int] = None
+    ) -> None:
         payload = {"shadow": shadow, "id": id}
         return await request("windowExtra.setUndecoratedShadow", payload, scope=False)
 
@@ -40,7 +48,9 @@ class WindowExtraAPI:
         payload = {"id": id}
         return await request("windowExtra.simpleFullscreen", payload, scope=False)
 
-    async def set_simple_fullscreen(self, fullscreen: bool, id: Optional[int] = None) -> bool:
+    async def set_simple_fullscreen(
+        self, fullscreen: bool, id: Optional[int] = None
+    ) -> bool:
         payload = {"fullscreen": fullscreen, "id": id}
         return await request("windowExtra.setSimpleFullscreen", payload, scope=False)
 
@@ -52,7 +62,9 @@ class WindowExtraAPI:
         payload = {"has_shadow": has_shadow, "id": id}
         return await request("windowExtra.setHasShadow", payload, scope=False)
 
-    async def set_is_document_edited(self, edited: bool, id: Optional[int] = None) -> None:
+    async def set_is_document_edited(
+        self, edited: bool, id: Optional[int] = None
+    ) -> None:
         payload = {"edited": edited, "id": id}
         return await request("windowExtra.setIsDocumentEdited", payload, scope=False)
 
@@ -60,15 +72,23 @@ class WindowExtraAPI:
         payload = {"id": id}
         return await request("windowExtra.isDocumentEdited", payload, scope=False)
 
-    async def set_allows_automatic_window_tabbing(self, enabled: bool, id: Optional[int] = None) -> None:
+    async def set_allows_automatic_window_tabbing(
+        self, enabled: bool, id: Optional[int] = None
+    ) -> None:
         payload = {"enabled": enabled, "id": id}
-        return await request("windowExtra.setAllowsAutomaticWindowTabbing", payload, scope=False)
+        return await request(
+            "windowExtra.setAllowsAutomaticWindowTabbing", payload, scope=False
+        )
 
     async def allows_automatic_window_tabbing(self, id: Optional[int] = None) -> bool:
         payload = {"id": id}
-        return await request("windowExtra.allowsAutomaticWindowTabbing", payload, scope=False)
+        return await request(
+            "windowExtra.allowsAutomaticWindowTabbing", payload, scope=False
+        )
 
-    async def set_tabbing_identifier(self, identifier: str, id: Optional[int] = None) -> None:
+    async def set_tabbing_identifier(
+        self, identifier: str, id: Optional[int] = None
+    ) -> None:
         payload = {"identifier": identifier, "id": id}
         return await request("windowExtra.setTabbingIdentifier", payload, scope=False)
 

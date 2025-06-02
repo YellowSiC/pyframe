@@ -1,4 +1,5 @@
 from typing import Optional, Tuple
+
 from ..runtime import request
 
 
@@ -17,7 +18,6 @@ async def notification(
     action: Optional[Tuple[str, str]] = None,
 ) -> None:
     """Leerer Platzhalter, der einen asynchronen Request sendet."""
-
 
     payload = {
         "summary": summary,

@@ -1,5 +1,7 @@
-from typing import Optional, List, Dict
+from typing import Dict, List, Optional
+
 from ..runtime import request
+
 
 class ResourceAPI:
     """
@@ -7,12 +9,14 @@ class ResourceAPI:
     Alle Methoden geben Dummy-Werte zurück oder tun nichts.
     """
 
-    async def watch(self, path: str, callback_url: str, max_events: int, timeout_secs: int) -> None:
+    async def watch(
+        self, path: str, callback_url: str, max_events: int, timeout_secs: int
+    ) -> None:
         payload = {
             "path": path,
             "callback_url": callback_url,
             "max_events": max_events,
-            "timeout_secs": timeout_secs
+            "timeout_secs": timeout_secs,
         }
         return await request("resource.watch", payload, scope=False)
 

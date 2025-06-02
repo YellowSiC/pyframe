@@ -1,9 +1,10 @@
+from pathlib import Path
 from typing import Any, Dict, Optional
+
+from nicegui import app, run, ui
+
 from pyframe.model.models import AppOptions
 from pyframe.runtime import run_webview
-from nicegui import app, run, ui
-from pathlib import Path
-
 
 START_DIR = str(Path(__file__).parent)
 
@@ -26,7 +27,7 @@ def start_webview(
     debug_devtools: Optional[bool] = None,
     debug_resource: Optional[str] = None,
     debug_entry: Optional[str] = None,
-    web_proto='http'
+    web_proto="http",
 ):
     """
     Launch the PyFrame-based WebView with the given basic configuration.
@@ -36,12 +37,11 @@ def start_webview(
         port=port,
         workers=workers,
         icon=icon,
-        web_proto = web_proto,
+        web_proto=web_proto,
         debug_devtools=debug_devtools,
         debug_resource="resource",
         debug_entry="http://localhost:8080",
-        internal_api=False
-    
+        internal_api=False,
     )
     run_webview(config.model_dump_json(indent=2, by_alias=True))
 
@@ -51,6 +51,7 @@ async def initialize_webview_window() -> None:
     Asynchronously launch the WebView window as a CPU-bound task.
     """
     await run.cpu_bound(start_webview)
+
 
 app.on_startup(initialize_webview_window)
 
