@@ -15,5 +15,5 @@ __all__ = [
     "resource",
     "window",
     "webview",
-    "window_extra"
+    "window_extra",
 ]

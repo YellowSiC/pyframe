@@ -3,16 +3,29 @@ from _pyframe import __version__, create_ico, create_webview
 from .app import PyFrame
 from .executers.pyinvoker import command
 from .frame import Frame, Menu, SubMenu, create_about_metadata
-from .handler import (dialog, extra, notify, resource, webview, window,
-                      window_extra)
-from .model.models import (AboutMetadata, AcceleratorCode, AcceleratorModifier,
-                           ActivationPolicy, AppOptions, CheckMenuItem,
-                           FrameBackgroundThrottlingPolicy,
-                           FrameShortcutOption, HeaderData, IconMenuItem,
-                           LinuxWindowConfig, MacOSWindowConfig, MenuFrame,
-                           MenuItem, PredefinedMenuItem, SocketSettings,
-                           Submenu, SystemTray, WindowConfig,
-                           WindowsWindowConfig)
+from .handler import dialog, extra, notify, resource, webview, window, window_extra
+from .model.models import (
+    AboutMetadata,
+    AcceleratorCode,
+    AcceleratorModifier,
+    ActivationPolicy,
+    AppOptions,
+    CheckMenuItem,
+    FrameBackgroundThrottlingPolicy,
+    FrameShortcutOption,
+    HeaderData,
+    IconMenuItem,
+    LinuxWindowConfig,
+    MacOSWindowConfig,
+    MenuFrame,
+    MenuItem,
+    PredefinedMenuItem,
+    SocketSettings,
+    Submenu,
+    SystemTray,
+    WindowConfig,
+    WindowsWindowConfig,
+)
 
 __all__ = [
     "__version__",
