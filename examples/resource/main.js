@@ -3,7 +3,7 @@ const input = document.getElementById('myInput');
 const output = document.getElementById('output');
 
 
-
+const close_app = document.getElementById('close_app');
 
 
 submitBtn.addEventListener('click', async () => {
@@ -17,6 +17,18 @@ try {
     output.textContent = '';
     output.classList.remove('visible');
   }
+  } catch (error) {
+    output.textContent = "Fehler: " + error;
+  }
+});
+
+
+
+
+
+close_app.addEventListener('click', async () => {
+try {
+  await PyFrame.call("window.close",[0]);
   } catch (error) {
     output.textContent = "Fehler: " + error;
   }
