@@ -85,7 +85,7 @@ impl EventHandler {
                     UserEvent::DragWindow(id) => {
                         let binding = self.app.window()?;
                         let window = binding.get_window_inner(id)?;
-                        window.drag_window().unwrap();
+                        window.drag_window()?;
                     }
 
                     UserEvent::MouseDown(id, x, y) => {
@@ -281,16 +281,13 @@ impl EventHandler {
 
     fn create_tray_icon(&self) -> Result<Option<tray_icon::TrayIcon>> {
         let menu = self.app.menu()?;
-        let tray_icon_options = self
-            .app
-            .launch_info
-            .options
-            .window_menu
-            .clone()
-            .unwrap()
-            .system_tray
-            .clone();
-
+        let tray_icon_options = match self.app.launch_info.options.window_menu.clone() {
+            Some(menu) => menu.system_tray.clone(),
+            None => {
+                eprintln!("No window menu configuration available");
+                return Ok(None);
+            }
+        };
         let menu_mode = self.app.launch_info.options.menu_mode.clone();
 
         let mut tray_icon = None;
