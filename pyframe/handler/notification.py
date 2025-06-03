@@ -3,7 +3,7 @@ from typing import Optional, Tuple
 from ..runtime import request
 
 
-async def notification(
+async def control_center_notification(
     summary: str,
     body: Optional[str] = None,
     app_id: Optional[str] = None,

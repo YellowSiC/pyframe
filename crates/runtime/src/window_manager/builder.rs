@@ -7,7 +7,10 @@ use std::sync::Arc;
 //use serde_json::json;
 
 use crate::{
-    log_if_err, options::window::WindowConfig, set_property, set_property_some, utils::FrameWindowTarget,
+    log_if_err,
+    options::window::WindowConfig,
+    set_property, set_property_some,
+    utils::{FrameWindowTarget, UserEvent},
     CoreApplication,
 };
 
@@ -239,19 +242,43 @@ impl FrameBuilder {
             move |request: wry::http::Request<String>| {
                 let window_result = ipc_app.window().and_then(|w| w.get_window_inner(win_id));
                 let request_str = request.body();
-                
-                match window_result {
-                    Ok(window) => {
-                        if let Err(err) = ipc_app.api().and_then(|w| w.call(&window, request_str.to_string())) {
-                            
-                            log_if_err!(window.send_ipc_callback(serde_json::json!({
-                                "ipc.error": err.to_string(),
-                            })));
+                let mut req = request_str.split([':', ',']);
+                match req.next().unwrap() {
+                    "minimize" => {
+                        let _ = _ipc_app.proxy.send_event(UserEvent::Minimize(win_id));
+                    }
+                    "maximize" => {
+                        let _ = _ipc_app.proxy.send_event(UserEvent::Maximize(win_id));
+                    }
+                    "drag_window" => {
+                        println!("Drag");
+                        let _ = _ipc_app.proxy.send_event(UserEvent::DragWindow(win_id));
+                    }
+                    "close" => {
+                        let _ = _ipc_app.proxy.send_event(UserEvent::CloseWindow);
+                    }
+                    "mousedown" => {
+                        let x = req.next().unwrap().parse().unwrap();
+                        let y = req.next().unwrap().parse().unwrap();
+                        let _ = _ipc_app.proxy.send_event(UserEvent::MouseDown(win_id, x, y));
+                    }
+                    "mousemove" => {
+                        let x = req.next().unwrap().parse().unwrap();
+                        let y = req.next().unwrap().parse().unwrap();
+                        let _ = _ipc_app.proxy.send_event(UserEvent::MouseMove(win_id, x, y));
+                    }
+                    _ => match window_result {
+                        Ok(window) => {
+                            if let Err(err) = ipc_app.api().and_then(|w| w.call(&window, request_str.to_string())) {
+                                log_if_err!(window.send_ipc_callback(serde_json::json!({
+                                    "ipc.error": err.to_string(),
+                                })));
+                            }
                         }
-                    }
-                    Err(err) => {
-                        println!("WARN: Window for id {:?} not found: {:?}", win_id, err);
-                    }
+                        Err(err) => {
+                            println!("WARN: Window for id {:?} not found: {:?}", win_id, err);
+                        }
+                    },
                 }
             }
         });

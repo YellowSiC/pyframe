@@ -2,18 +2,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, List, Literal, Optional
 
-from pyframe.model.models import (
-    AboutMetadata,
-    AcceleratorCode,
-    AcceleratorModifier,
-    CheckMenuItem,
-    IconMenuItem,
-    MenuFrame,
-    MenuItem,
-    PredefinedMenuItem,
-    Submenu,
-    SystemTray,
-)
+from pyframe.model.models import (AboutMetadata, AcceleratorCode,
+                                  AcceleratorModifier, CheckMenuItem,
+                                  IconMenuItem, MenuFrame, MenuItem,
+                                  PredefinedMenuItem, Submenu, SystemTray)
 
 PredefinedTyp = Literal[
     "separator",

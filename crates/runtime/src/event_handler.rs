@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 use crate::{
+    hylper::{hit_test, HitTestResult},
     lock, try_or_log_err,
     utils::{get_json_sync, FrameEvent, FrameWindowTarget, UserEvent},
     CoreApplication,
@@ -18,7 +19,6 @@ use tao::{
 
 pub struct EventHandler {
     app: Arc<CoreApplication>,
-    active_window_id: std::sync::Mutex<Option<WindowId>>,
     _window_id: WindowId,
     tray_icon: Option<tray_icon::TrayIcon>,
 }
@@ -27,7 +27,6 @@ impl EventHandler {
     pub fn new(app: Arc<CoreApplication>, _window_id: WindowId) -> Self {
         Self {
             app,
-            active_window_id: std::sync::Mutex::new(None),
             _window_id,
             tray_icon: None,
         }
@@ -52,6 +51,57 @@ impl EventHandler {
                     UserEvent::MenuEvent(_menu_event) => {
                         self.handle_menu_event(_menu_event)?;
                     }
+                    UserEvent::Minimize(id) => {
+                        let binding = self.app.window()?;
+                        let window = binding.get_window_inner(id)?;
+                        window.set_minimized(true);
+                    }
+                    UserEvent::Maximize(id) => {
+                        let binding = self.app.window()?;
+                        let window = binding.get_window_inner(id)?;
+                        window.set_maximized(!window.is_maximized());
+                    }
+                    UserEvent::CloseWindow => {
+                        let host = self.app.launch_info.options.host.clone();
+                        let port = self.app.launch_info.options.port;
+                        let server_url = format!("http://{}:{}/server_shutdown", host, port);
+
+                        match get_json_sync(&server_url) {
+                            Ok(json) => {
+                                if json["status"] == 200 {
+                                    if let Some(tray) = self.tray_icon.take() {
+                                        drop(tray); // Explizit "destroy"
+                                    }
+                                    *control_flow = ControlFlow::Exit;
+                                } else {
+                                    eprintln!("Shutdown-Status: {:?}", json);
+                                }
+                            }
+                            Err(err) => {
+                                eprintln!("Fehler beim Server-Shutdown: {}", err);
+                            }
+                        }
+                    }
+                    UserEvent::DragWindow(id) => {
+                        let binding = self.app.window()?;
+                        let window = binding.get_window_inner(id)?;
+                        window.drag_window().unwrap();
+                    }
+
+                    UserEvent::MouseDown(id, x, y) => {
+                        let binding = self.app.window()?;
+                        let window = binding.get_window_inner(id)?;
+                        let res = hit_test(window.inner_size(), x, y, window.scale_factor());
+                        match res {
+                            HitTestResult::Client | HitTestResult::NoWhere => {}
+                            _ => res.drag_resize_window(&window),
+                        }
+                    }
+                    UserEvent::MouseMove(id, x, y) => {
+                        let binding = self.app.window()?;
+                        let window = binding.get_window_inner(id)?;
+                        hit_test(window.inner_size(), x, y, window.scale_factor()).change_cursor(&window);
+                    }
                 },
 
                 _ => (),
@@ -70,7 +120,6 @@ impl EventHandler {
         if event == WindowEvent::Destroyed {
             self.app.window()?.close_window_inner(window_id)?;
         }
-        *self.active_window_id.lock().unwrap() = Some(window_id);
         let window = self.app.window()?.get_window_inner(window_id)?;
 
         match event {
@@ -102,12 +151,16 @@ impl EventHandler {
                 )?;
             }
             WindowEvent::CloseRequested => {
+                println!("CloseRequested");
                 let is_block_closed_requested = { lock!(window.state)?.is_block_closed_requested };
+                println!("is_block_closed_requested:{}", is_block_closed_requested);
                 if is_block_closed_requested {
+                    println!("close_1");
                     window.send_ipc_event("window.closeRequested", json!(null))?;
                 } else {
                     self.app.window()?.close_window_inner(window_id)?;
                     if window.id == 0 {
+                        println!("close_2");
                         let host = self.app.launch_info.options.host.clone();
                         let port = self.app.launch_info.options.port;
                         let server_url = format!("http://{}:{}/server_shutdown", host, port);
@@ -243,8 +296,7 @@ impl EventHandler {
         let mut tray_icon = None;
 
         match menu_mode {
-            Some(crate::options::MenuMode::Menu) => {
-            }
+            Some(crate::options::MenuMode::Menu) => {}
             Some(crate::options::MenuMode::Tray) => {
                 if let Some(tra_options) = &tray_icon_options {
                     let window_menu = menu.get_menu_manager()?; // Beispielmethode, die das Fenster-Menü zurückgib

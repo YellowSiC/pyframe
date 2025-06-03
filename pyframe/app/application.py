@@ -19,20 +19,10 @@ from ..api import FrameRESTAPI
 from ..connection import Connection
 from ..frame.menu import Menu
 from ..frame.window import Frame
-from ..model.models import (
-    AppOptions,
-    CheckMenuItem,
-    IconMenuItem,
-    LinuxWindowConfig,
-    MacOSWindowConfig,
-    MenuFrame,
-    MenuItem,
-    PredefinedMenuItem,
-    SocketSettings,
-    Submenu,
-    SystemTray,
-    WindowsWindowConfig,
-)
+from ..model.models import (AppOptions, CheckMenuItem, IconMenuItem,
+                            LinuxWindowConfig, MacOSWindowConfig, MenuFrame,
+                            MenuItem, PredefinedMenuItem, SocketSettings,
+                            Submenu, SystemTray, WindowsWindowConfig)
 from ..runtime import run_webview
 from ..utils import suppress_stderr
 
@@ -234,3 +224,33 @@ class PyFrame:
                 self.shutdown_event.set()
             print("shutdown detected. Exiting...")
             self.stop()
+
+
+
+    def start_with_console(self) -> None:
+        """
+        Start the entire PyFrame system, including the API server and the webview.
+
+        Handles graceful shutdown upon receiving SIGINT or SIGTERM signals.
+        """
+        self.start_fastapi()
+        self.start_webview()
+
+        def handle_signal(sig: int, frame: Optional[Any]) -> None:
+                self.shutdown_event.set()
+
+        signal.signal(signal.SIGINT, handle_signal)
+        signal.signal(signal.SIGTERM, handle_signal)
+
+        try:
+                while not self.shutdown_event.is_set():
+                    if self.webview_process and self.webview_process.is_alive():
+                        self.webview_process.join(timeout=0.5)
+                    else:
+                        print("[WARN] webview_process not alive. Waiting...")
+                        time.sleep(0.5)
+        except KeyboardInterrupt:
+                print("Keyboard interrupt detected. Exiting...")
+                self.shutdown_event.set()
+        print("shutdown detected. Exiting...")
+        self.stop()

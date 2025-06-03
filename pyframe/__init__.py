@@ -2,36 +2,25 @@ from _pyframe import __version__, create_ico, create_webview
 
 from .app import PyFrame
 from .executers.pyinvoker import command
-from .frame.menu import Menu, SubMenu
-from .frame.window import Frame
-from .handler.dialog import DialogHandel
-from .handler.webview import WebviewHandel
-from .handler.window import WindowHandel
-from .model.models import (
-    AboutMetadata,
-    AcceleratorCode,
-    AcceleratorModifier,
-    ActivationPolicy,
-    AppOptions,
-    CheckMenuItem,
-    FrameBackgroundThrottlingPolicy,
-    FrameShortcutOption,
-    HeaderData,
-    IconMenuItem,
-    LinuxWindowConfig,
-    MacOSWindowConfig,
-    MenuFrame,
-    MenuItem,
-    PredefinedMenuItem,
-    SocketSettings,
-    Submenu,
-    SystemTray,
-    WindowConfig,
-    WindowsWindowConfig,
-)
+from .frame import Frame, Menu, SubMenu, create_about_metadata
+from .handler import (dialog, extra, notify, resource, webview, window,
+                      window_extra)
+from .model.models import (AboutMetadata, AcceleratorCode, AcceleratorModifier,
+                           ActivationPolicy, AppOptions, CheckMenuItem,
+                           FrameBackgroundThrottlingPolicy,
+                           FrameShortcutOption, HeaderData, IconMenuItem,
+                           LinuxWindowConfig, MacOSWindowConfig, MenuFrame,
+                           MenuItem, PredefinedMenuItem, SocketSettings,
+                           Submenu, SystemTray, WindowConfig,
+                           WindowsWindowConfig)
 
 __all__ = [
     "__version__",
+    "create_about_metadata",
+    "resource",
+    "extra",
+    "window_extra",
+    "notify",
     "create_webview",
     "create_ico",
     "PyFrame",
@@ -43,9 +32,9 @@ __all__ = [
     "Frame",
     "Menu",
     "SubMenu",
-    "WindowHandel",
-    "DialogHandel",
-    "WebviewHandel",
+    "window",
+    "dialog",
+    "webview",
     "command",
     "MenuFrame",
     "MenuItem",

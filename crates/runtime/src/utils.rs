@@ -15,7 +15,10 @@ use std::{
     ops::Deref,
     pin::Pin,
 };
-use tao::event_loop::{ControlFlow, EventLoop, EventLoopBuilder, EventLoopProxy, EventLoopWindowTarget};
+use tao::{
+    event_loop::{ControlFlow, EventLoop, EventLoopBuilder, EventLoopProxy, EventLoopWindowTarget},
+    window::WindowId,
+};
 pub type FrameEventLoop = EventLoop<UserEvent>;
 pub type FrameEventLoopBuilder = EventLoopBuilder<UserEvent>;
 pub type FrameEventLoopProxy = EventLoopProxy<UserEvent>;
@@ -27,6 +30,12 @@ pub struct FrameEvent(FrameCallback);
 pub enum UserEvent {
     FrameEvent(FrameEvent),
     MenuEvent(muda::MenuEvent),
+    CloseWindow,
+    Minimize(WindowId),
+    Maximize(WindowId),
+    DragWindow(WindowId),
+    MouseDown(WindowId, i32, i32),
+    MouseMove(WindowId, i32, i32),
 }
 
 impl Debug for FrameEvent {
@@ -452,7 +461,6 @@ pub fn menu_provider(app: &Arc<CoreApplication>, window: tao::window::Window) ->
                     println!("window_menu ist leer, kein Menü wird angelegt.");
                 }
             }
-
         }
         Some(crate::options::MenuMode::Tray) => {
             if let Some(menu_frame) = &config {
@@ -461,13 +469,10 @@ pub fn menu_provider(app: &Arc<CoreApplication>, window: tao::window::Window) ->
                     {
                         menu_sys_guard.register_menu_items(menu_frame.clone())?;
                     }
-                    
-                    //let _menu_bar = menu_sys_guard.get_menu_manager()?;
 
+                    //let _menu_bar = menu_sys_guard.get_menu_manager()?;
                 }
             }
-            
-
         }
         _ => {
             eprintln!("Unbekannter MenuMode – es wird kein Menü oder Tray-Icon erstellt!");
