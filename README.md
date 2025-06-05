@@ -81,18 +81,36 @@ sudo apt-get update && sudo apt-get install -y --no-install-recommends libayatan
 
 5️⃣ **Initialize the environment and build the Rust extension:**  
 ```bash
-python -m venv .venv
+python -m venv venv
 source .venv/bin/activate  # macOS / Linux
-.venv\Scripts\Activate.ps1  # Windows PowerShell
-.venv\Scripts\ctivate.bat  # Windows CMD
+. venv\Scripts\Activate.ps1  # Windows PowerShell
+.venv\Scripts\Activate.bat  # Windows CMD
 ```
 
 ```bash
 pip install maturin uv
 ```
 
+6. **Install make (Windows)**  
+- open powershell as admin
 ```bash
+Set-ExecutionPolicy Bypass -Scope Process -Force; `
+[System.Net.ServicePointManager]::SecurityProtocol = `
+[System.Net.ServicePointManager]::SecurityProtocol -bor 3072; `
+iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+```
+- restart powershell as admin
+```bash
+choco install make
+```
+- check installation
+```bash
+make --version
+```
+- restart visual studio code
 
+
+```bash
 make build-dev
 ```
 
